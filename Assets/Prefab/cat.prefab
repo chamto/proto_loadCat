@@ -175,6 +175,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!1 &190076
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 458472}
+  m_Layer: 0
+  m_Name: look
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &192826
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,6 +216,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 458472}
   - {fileID: 439428}
   - {fileID: 493150}
   - {fileID: 443342}
@@ -223,7 +239,7 @@ Transform:
   - {fileID: 428854}
   - {fileID: 490240}
   m_Father: {fileID: 401274}
-  m_RootOrder: 4
+  m_RootOrder: 5
 --- !u!4 &411748
 Transform:
   m_ObjectHideFlags: 1
@@ -273,7 +289,7 @@ Transform:
   - {fileID: 468822}
   - {fileID: 411748}
   m_Father: {fileID: 401274}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!4 &443342
 Transform:
   m_ObjectHideFlags: 1
@@ -285,7 +301,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 401274}
-  m_RootOrder: 2
+  m_RootOrder: 3
 --- !u!4 &445302
 Transform:
   m_ObjectHideFlags: 1
@@ -297,7 +313,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 401274}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!4 &452514
 Transform:
   m_ObjectHideFlags: 1
@@ -309,6 +325,18 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 409924}
+  m_RootOrder: 0
+--- !u!4 &458472
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 190076}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 401274}
   m_RootOrder: 0
 --- !u!4 &468822
 Transform:
@@ -345,7 +373,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 401274}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!95 &9581796
 Animator:
   serializedVersion: 3
@@ -374,6 +402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d546839d229884b6b8546dd4f3de4b57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  angle: 0
 --- !u!212 &21211240
 SpriteRenderer:
   m_ObjectHideFlags: 1

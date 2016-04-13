@@ -117,37 +117,46 @@ public class CatAniInit_MonoBehaviour : HierarchyLoader_MonoBehaviour
 
 	public void AniDirection(Vector3 dir)
 	{
-		Transform tro = this.GetComponentInParent<Transform> ();
-		Vector3 scale = tro.localScale;
-		if (dir.x < 0 && scale.x < 0) { //left
-			scale.x *= -1;
-			tro.localScale = scale;
+
+		//    dir.x
+		//left  :  right
+		// -    :    +
+		//   scale.x
+		// +    :    -
+		Vector3 aniDir = Vector3.zero; ////애니의 기준방향
+		Vector3 scale = this.transform.localScale;
+		if (dir.x <= 0) 
+		{	//left
+			scale.x = Mathf.Abs(scale.x);
+
+			aniDir = Vector3.left;
+			//Debug.Log("AniDirection left"); //chamto test
 		}
-		if (dir.x > 0 && scale.x > 0) { //right
-			scale.x *= -1;
-			tro.localScale = scale;
+		if (0 < dir.x) 
+		{	//right
+			scale.x = Mathf.Abs(scale.x) * -1;
+
+			aniDir = Vector3.right;
+			//Debug.Log("AniDirection right"); //chamto test
 		}
+		this.transform.localScale = scale;
 
 
-		//todo..
-		//dir.Normalize ();
-		//tro.localRotation.SetLookRotation (dir,Vector3.forward);
-		//tro.localRotation.eulerAngles.Set (dir.x, dir.y, dir.z);
-		//tro.Rotate (dir);
-		//tro.localRotation = Quaternion.Euler (dir);
+		//transform.localRotation = Quaternion.LookRotation (Vector3.forward, dir);
+		transform.localRotation = Quaternion.FromToRotation (aniDir, dir);
+
 	}
+
 
 	void Start () 
 	{
 		this.init ();
-		
+
+
 		//this.TestPrint (); //chamto test
 	}
 
-	//chamto test
-//	public int state = 0 ;
-	public Vector3 _direction = Vector3.left;
-	public bool bExcute = false;
+
 	public float angle = 0;
 	void Update () 
 	{
@@ -163,19 +172,5 @@ public class CatAniInit_MonoBehaviour : HierarchyLoader_MonoBehaviour
 			transform.eulerAngles = new Vector3(0,0,angle);
 		}
 
-
-		if (false == bExcute) 
-		{
-			this.AniDirection (_direction);
-
-//			if (state == 0)
-//				this.AniInitHide ();
-//			if (state == 1)
-//				this.AniInitRush ();
-//			if (state == 2)
-//				this.AniInitEat ();
-
-			bExcute = true;
-		}
 	}
 }
