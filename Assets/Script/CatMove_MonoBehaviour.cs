@@ -24,7 +24,15 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 			destPos = Input_Unity.GetTouchWorldPos ();
 			destPos.z = 0;
 			dir = destPos - transform.position;
-			rb2d.AddForce (dir*1.2f, ForceMode2D.Impulse);
+
+
+			//Debug.Log("Force : " + rb2d.velocity.sqrMagnitude); //chamto test
+			if(rb2d.velocity.sqrMagnitude >= 100.0f)
+				rb2d.AddForce (dir, ForceMode2D.Force);
+			else
+				rb2d.AddForce (dir, ForceMode2D.Impulse);
+			
+			//rb2d.MovePosition(destPos);
 			//rb2d.AddForceAtPosition(dir, destPos, ForceMode2D.Impulse);
 		}
 
