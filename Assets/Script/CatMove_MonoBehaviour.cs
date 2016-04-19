@@ -4,11 +4,13 @@ using System.Collections;
 public class CatMove_MonoBehaviour : MonoBehaviour 
 {
 	public Vector3 destPos = Vector3.zero;
+	public Rigidbody2D rb2d = null;
 
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start () 
+	{
+		rb2d = this.GetComponent<Rigidbody2D> ();
 	}
 	
 	bool bMove = true;
@@ -22,12 +24,12 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 			destPos = Input_Unity.GetTouchWorldPos ();
 			destPos.z = 0;
 			dir = destPos - transform.position;
-
+			rb2d.AddForce (dir*1.2f, ForceMode2D.Impulse);
+			//rb2d.AddForceAtPosition(dir, destPos, ForceMode2D.Impulse);
 		}
 
-
 		this.AniDirection (destPos - transform.position);
-		this.transform.position += dir * Time.deltaTime; 
+		//this.transform.position += dir * Time.deltaTime; 
 
 
 	}
@@ -68,6 +70,16 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 
 	void TouchBegan() 
 	{
+		//chamto test code - layer collision test
+		bool option = true;
+		option = Physics2D.GetIgnoreLayerCollision (LayerMask.NameToLayer ("SuperCat"), LayerMask.NameToLayer ("Building"));
+		Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("SuperCat"), LayerMask.NameToLayer ("Building"), true);
+
+		if(this.gameObject.layer != LayerMask.NameToLayer ("SuperCat"))
+			this.gameObject.layer = LayerMask.NameToLayer ("SuperCat");
+		else
+			this.gameObject.layer = LayerMask.NameToLayer ("Default");
+
 		CDefine.DebugLog ("began");
 	}
 	void TouchMoved() 
