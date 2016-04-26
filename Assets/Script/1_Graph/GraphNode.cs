@@ -31,6 +31,7 @@ public class GraphNode : System.ICloneable
 
 }
 
+
 //-----------------------------------------------------------------------------
 //
 //  Graph node for use in creating a navigation graph.This node contains
@@ -38,9 +39,48 @@ public class GraphNode : System.ICloneable
 //  if you want your nodes to represent health packs, gold mines and the like
 //-----------------------------------------------------------------------------
 
-//성긴그래프
-
-//----------------------------- Graph_SearchDFS -------------------------------
-//
-//  class to implement a depth first search. 
-//-----------------------------------------------------------------------------
+public	class NavGraphNode : GraphNode
+{
+	
+	//the node's position
+	protected	Vector2     m_vPosition;
+	
+	//often you will require a navgraph node to contain additional information.
+	//For example a node might represent a pickup such as armor in which
+	//case m_ExtraInfo could be an enumerated value denoting the pickup type,
+	//thereby enabling a search algorithm to search a graph for specific items.
+	//Going one step further, m_ExtraInfo could be a pointer to the instance of
+	//the item type the node is twinned with. This would allow a search algorithm
+	//to test the status of the pickup during the search. 
+	//protected object  m_ExtraInfo;
+	
+	
+	public NavGraphNode(){}
+	
+	public NavGraphNode(int  idx, Vector2 pos):base(idx)
+	{
+		m_vPosition = pos;
+	}
+	
+	public override string ToString ()
+	{
+		return "" + base.ToString () + " " + m_vPosition;
+	}
+	
+	
+	
+	public Vector2   Pos() {return m_vPosition;}
+	public void       SetPos(Vector2 NewPosition){m_vPosition = NewPosition;}
+	
+	//public object ExtraInfo() {return m_ExtraInfo;}
+	//public void       SetExtraInfo(object info){m_ExtraInfo = info;}
+	
+	public  override object Clone()
+	{
+		NavGraphNode node = base.Clone () as NavGraphNode;
+		node.m_vPosition = this.m_vPosition;
+		
+		return (object)node;
+	}
+	
+}

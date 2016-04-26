@@ -3,8 +3,6 @@ using UnityEngine.Assertions;
 using System.Collections;
 using System.Collections.Generic;
 
-//성긴그래프
-
 //----------------------------- Graph_SearchDFS -------------------------------
 //
 //  class to implement a depth first search. 
