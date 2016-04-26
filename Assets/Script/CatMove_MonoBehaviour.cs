@@ -13,10 +13,11 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		rb2d = this.GetComponent<Rigidbody2D> ();
 	}
 	
-	bool bMove = true;
-	Vector3 dir;
+
+
 	void Update () 
 	{
+		Vector3 dir = Vector3.zero;
 
 		if(true == Input_Unity.IsTouch())
 		{
@@ -98,4 +99,34 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	{
 		CDefine.DebugLog ("ended");
 	}
+
+
+	void OnCollisionEnter2D(Collision2D coll) 
+	{
+		if (coll.gameObject.tag == "Cat") 
+		{
+			//Debug.Log("OnCollisionEnter2D : Cat");
+		}
+
+		if (coll.gameObject.tag == "Building") 
+		{
+			//Debug.Log("OnCollisionEnter2D : Building");
+
+			if(rb2d.velocity.sqrMagnitude >= 30.0f)
+			{
+				//Vector2 pos = (Vector2)(transform.position) + rb2d.velocity.normalized * 1.5f;
+				
+				//rb2d.velocity
+				
+				//rb2d.MovePosition(pos);
+			}
+
+
+
+		}
+	}
+
+
+
+
 }

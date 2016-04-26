@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 
 //성긴그래프
+//public class SparseGraph<T_Node, T_Edge> where T_Node : GraphNode  where T_Edge : GraphEdge
 public class SparseGraph
 {
 	//a couple more typedefs to save my fingers and to help with the formatting

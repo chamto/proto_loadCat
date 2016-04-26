@@ -23,17 +23,17 @@ public class Graph_SearchDFS
 	
 	//this records the indexes of all the nodes that are visited as the
 	//search progresses
-	private List<int>  m_Visited = null;
+	private List<int>  m_Visited = new List<int>();
 	
 	//this holds the route taken to the target. Given a node index, the value
 	//at that index is the node's parent. ie if the path to the target is
 	//3-8-27, then m_Route[8] will hold 3 and m_Route[27] will hold 8.
-	private List<int>  m_Route = null;
+	private List<int>  m_Route = new List<int>();
 	
 	//As the search progresses, this will hold all the edges the algorithm has
 	//examined. THIS IS NOT NECESSARY FOR THE SEARCH, IT IS HERE PURELY
 	//TO PROVIDE THE USER WITH SOME VISUAL FEEDBACK
-	private List<GraphEdge>  m_SpanningTree = null;
+	private List<GraphEdge>  m_SpanningTree = new List<GraphEdge>();
 	
 	//the source and target node indices
 	private int               m_iSource, m_iTarget;
@@ -94,20 +94,35 @@ public class Graph_SearchDFS
 		return false;
 	}
 
-	public
-		Graph_SearchDFS( SparseGraph  graph,
+	public void
+		Init( SparseGraph  graph,
 		                int          source,
 		                int          target )
-	{       
+	{  
+		this.Clear ();
+
 		m_Graph = graph;
 		m_iSource = source;
 		m_iTarget = target;
 		m_bFound = false;
-		m_Visited = new List<int>(m_Graph.NumNodes()){(int)Aid.unvisited,};  
-		m_Route = new List<int>(m_Graph.NumNodes()){(int)Aid.no_parent_assigned,};
-		m_SpanningTree = new List<GraphEdge>();
+
+		m_Visited.Capacity = m_Graph.NumNodes ();
+		m_Route.Capacity = m_Graph.NumNodes ();
+
+		for (int i=0; i<m_Graph.NumNodes(); i++) 
+		{
+			m_Visited[i] = (int)Aid.unvisited;
+			m_Route[i] = (int)Aid.no_parent_assigned;
+		}
 
 		m_bFound = Search(); 
+	}
+
+	public void Clear()
+	{
+		m_Visited.Clear ();
+		m_Route.Clear ();
+		m_SpanningTree.Clear ();
 	}
 	
 	//returns a vector containing pointers to all the edges the search has examined

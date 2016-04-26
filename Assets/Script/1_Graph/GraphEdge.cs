@@ -105,9 +105,3 @@ public class GraphEdge : System.ICloneable
 
 }
 
-//성긴그래프
-
-//----------------------------- Graph_SearchDFS -------------------------------
-//
-//  class to implement a depth first search. 
-//-----------------------------------------------------------------------------
