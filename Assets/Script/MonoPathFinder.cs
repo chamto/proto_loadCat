@@ -16,8 +16,8 @@ public class MonoPathFinder : MonoBehaviour
 
 	public Transform _town = null;
 
-	public bool _saveNode_ToFile = false;
-	public bool _loadNode_FromFile = false;
+	public bool _saveXML = false;
+	public bool _loadXML = false;
 
 	// Use this for initialization
 	void Start () 
@@ -39,35 +39,51 @@ public class MonoPathFinder : MonoBehaviour
 		CSingleton<WideUseCoroutine>.Instance.StartCoroutine (_table.LoadXML (), null, false, "CTableNodeInfo");
 
 
-		_table.PrintValue ();
-		_table.SaveXML ("Assets/StreamingAssets/"+"abc.xml", _table._data);
+		//_table.PrintValue ();
+
 	}
 	
 
 	void Update () 
 	{
-		if (true == _saveNode_ToFile) 
+		if (true == _saveXML) 
 		{
+			List<Table.NodeInfo> saveList = new List<Table.NodeInfo>();
+			NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(true);
+			foreach (NodeInfo_MonoBehaviour mono in monoList) 
+			{
+				saveList.Add(new Table.NodeInfo(mono._nodeNumber, mono.transform.position, mono._adjacencyEdgeList));
+			}
+			_table._data = saveList;
+			_table.SaveXML ("Assets/StreamingAssets/"+"townNode.xml", _table._data);
 
-			_saveNode_ToFile = false;
+			//---------------
+			_saveXML = false;
 		}
 
-		if (true == _loadNode_FromFile) 
+		if (true == _loadXML) 
 		{
+			NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(true);
+			foreach(NodeInfo_MonoBehaviour mono in monoList)
+			{
+				GameObject.Destroy(mono.gameObject);
+			}
 			foreach(Table.NodeInfo info in _table._data)
 			{
 				this.AddNodePrefab(info);
 			}
-			_loadNode_FromFile = false;
+
+			//---------------
+			_loadXML = false;
 		}
 	}
 
 	public void LoadGraphNode()
 	{
-		NodeInfo_MonoBehaviour[] list =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(true);
-		foreach (NodeInfo_MonoBehaviour info in list) 
+		NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(true);
+		foreach (NodeInfo_MonoBehaviour mono in monoList) 
 		{
-			Debug.Log("<color=red>Load Number:</color>" + info._nodeNumber);
+			Debug.Log("<color=red>Load Number:</color>" + mono._nodeNumber);
 		}
 
 
@@ -165,6 +181,13 @@ namespace Table
 		public int nodeNum = -1;
 		public Vector3 nodePos = Vector3.zero;
 		public List<int> edgeList = new List<int>();
+
+		public NodeInfo() {}
+
+		public NodeInfo(int nodeNum, Vector3 nodePos, List<int> edgeList)
+		{
+			this.nodeNum = nodeNum; this.nodePos = nodePos; this.edgeList = edgeList;
+		}
 
 		public override string ToString ()
 		{
