@@ -18,6 +18,7 @@ public class MonoPathFinder : MonoBehaviour
 
 	public bool _saveXML = false;
 	public bool _loadXML = false;
+	public bool _updateNode = false;
 
 	// Use this for initialization
 	void Start () 
@@ -49,7 +50,7 @@ public class MonoPathFinder : MonoBehaviour
 		if (true == _saveXML) 
 		{
 			List<Table.NodeInfo> saveList = new List<Table.NodeInfo>();
-			NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(true);
+			NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(false);
 			foreach (NodeInfo_MonoBehaviour mono in monoList) 
 			{
 				saveList.Add(new Table.NodeInfo(mono._nodeNumber, mono.transform.position, mono._adjacencyEdgeList));
@@ -63,7 +64,7 @@ public class MonoPathFinder : MonoBehaviour
 
 		if (true == _loadXML) 
 		{
-			NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(true);
+			NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(false);
 			foreach(NodeInfo_MonoBehaviour mono in monoList)
 			{
 				GameObject.Destroy(mono.gameObject);
@@ -73,8 +74,21 @@ public class MonoPathFinder : MonoBehaviour
 				this.AddNodePrefab(info);
 			}
 
+
 			//---------------
 			_loadXML = false;
+		}
+
+		if (true == _updateNode) 
+		{
+
+			NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(false);
+			foreach(NodeInfo_MonoBehaviour mono in monoList)
+			{
+				//mono.UpdateEdgeList();
+				mono._isUpdateValue = true;
+			}
+			_updateNode = false;
 		}
 	}
 
