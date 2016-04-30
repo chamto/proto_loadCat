@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <root>
-  <NodeInfo nodeNum="0" >
+  <NodeInfo nodeNum="0" nodePos="( 0.0, 4, 0.0 ) ">
     <n0 edgeNum="1"  />
     <n1 edgeNum="2"  />
     <n2 edgeNum="3"  />
   </NodeInfo>
-  <NodeInfo nodeNum="1" >
+  <NodeInfo nodeNum="1" nodePos=" ( 1.0, 2.0, 0.5)">
     <n0 edgeNum="2"  />
     <n1 edgeNum="3"  />
     <n2 edgeNum="4"  />

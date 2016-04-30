@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+//using System.String;
+
 
 public class MonoPathFinder : MonoBehaviour 
 {
@@ -10,7 +12,12 @@ public class MonoPathFinder : MonoBehaviour
 	private SparseGraph 	_graph = new SparseGraph (true);
 	private Graph_SearchDFS _searchDFS = new Graph_SearchDFS();
 
+	private Table.CTableNodeInfo _table = new Table.CTableNodeInfo ();
+
 	public Transform _town = null;
+
+	public bool _saveNode_ToFile = false;
+	public bool _loadNode_FromFile = false;
 
 	// Use this for initialization
 	void Start () 
@@ -29,15 +36,30 @@ public class MonoPathFinder : MonoBehaviour
 
 
 		//fileLoding
-		Table.CTableNodeInfo t = new Table.CTableNodeInfo ();
-		//this.StartCoroutine (t.LoadXML ());
-		CSingleton<WideUseCoroutine>.Instance.StartCoroutine (t.LoadXML (), null, false, "CTableNodeInfo");
+		CSingleton<WideUseCoroutine>.Instance.StartCoroutine (_table.LoadXML (), null, false, "CTableNodeInfo");
 
+
+		_table.PrintValue ();
+		_table.SaveXML ("Assets/StreamingAssets/"+"abc.xml", _table._data);
 	}
 	
 
 	void Update () 
 	{
+		if (true == _saveNode_ToFile) 
+		{
+
+			_saveNode_ToFile = false;
+		}
+
+		if (true == _loadNode_FromFile) 
+		{
+			foreach(Table.NodeInfo info in _table._data)
+			{
+				this.AddNodePrefab(info);
+			}
+			_loadNode_FromFile = false;
+		}
 	}
 
 	public void LoadGraphNode()
@@ -54,6 +76,25 @@ public class MonoPathFinder : MonoBehaviour
 
 	private void loadAdjacencyEdgeList()
 	{
+	}
+	public void AddNodePrefab(Table.NodeInfo info)
+	{
+		GameObject obj = this.CreatePrefab ("node (-1)");
+		obj.transform.parent = _town;
+		obj.transform.position = info.nodePos;
+
+		NodeInfo_MonoBehaviour mono = obj.GetComponent<NodeInfo_MonoBehaviour> ();
+		mono._nodeNumber = info.nodeNum;
+		mono._adjacencyEdgeList = info.edgeList;
+
+		mono._isUpdateValue = true;
+
+	}
+
+	public GameObject CreatePrefab(string path)
+	{
+		const string root = "Prefab/";
+		return MonoBehaviour.Instantiate(Resources.Load(root + path)) as GameObject;
 	}
 }
 
@@ -122,6 +163,7 @@ namespace Table
 	public class NodeInfo 
 	{
 		public int nodeNum = -1;
+		public Vector3 nodePos = Vector3.zero;
 		public List<int> edgeList = new List<int>();
 
 		public override string ToString ()
@@ -178,11 +220,29 @@ namespace Table
 			this.loadXMLFromMemory (stream);
 
 			//chamto test
-			PrintValue ();
-			SaveXML ("Assets/StreamingAssets/"+"abc.xml", _data);
+			//PrintValue ();
+			//SaveXML ("Assets/StreamingAssets/"+"abc.xml", _data);
 
 		}
+		public  Vector3 Vector3FromString(string s)
+		{
+			char[] delimiterChars = { ' ', ',' , '(' , ')' };
+			string[] parts = s.Split(delimiterChars, System.StringSplitOptions.RemoveEmptyEntries);
 
+
+//			Debug.Log ("Vector3FromString_________"); //chamto test
+//			foreach(string p in parts)
+//			{
+//				Debug.Log("_"+p+"_");
+//			}
+
+			return new Vector3(
+				float.Parse(parts[0]),
+				float.Parse(parts[1]),
+				float.Parse(parts[2]));
+		}
+
+		
 		private void loadXMLFromMemory(MemoryStream stream)
 		{
 			_bCompleteLoad = false;
@@ -191,7 +251,7 @@ namespace Table
 			//------------------------------------------------------------------------
 
 //			<root>
-//				<NodeInfo nodeNum="0" >
+//				<NodeInfo nodeNum="0" nodePos="(1.0 , 1.0 , 1.0)">
 //					<n0 edgeNum="1"  />
 //					<n1 edgeNum="2"  />
 //					<n2 edgeNum="3"  />
@@ -214,7 +274,9 @@ namespace Table
 				_data.Add(item);
 				xmlNode = secondList[i].Attributes.GetNamedItem("nodeNum");
 				item.nodeNum = int.Parse(xmlNode.Value);
-				//Debug.Log ("parse : " + xmlNode.Name + " : "+ item.nodeNum); //chamto test
+				xmlNode = secondList[i].Attributes.GetNamedItem("nodePos");
+				item.nodePos = this.Vector3FromString(xmlNode.Value);
+				//Debug.Log ("parse : " + xmlNode.Name + " : "+ xmlNode.Value); //chamto test
 
 				thirdList = secondList[i].ChildNodes;
 				for (int j = 0; j < thirdList.Count; ++j) 
@@ -248,7 +310,10 @@ namespace Table
 			foreach (NodeInfo n in list) 
 			{
 				second_element = Xmldoc.CreateElement("NodeInfo");
-				second_element.SetAttribute("nodeNum",n.nodeNum.ToString()); 
+				second_element.SetAttribute("nodeNum",n.nodeNum.ToString());
+				second_element.SetAttribute("nodePos",n.nodePos.ToString());
+
+
 				int count = 0;
 				foreach (int edgeNum in n.edgeList) 
 				{

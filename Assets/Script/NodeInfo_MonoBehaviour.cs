@@ -25,12 +25,19 @@ public class NodeInfo_MonoBehaviour : MonoBehaviour
 		{
 
 			this.UpdateEdgeList();
+			this.UpdateNode();
 
 			_isUpdateValue = false;
 		}
 
 	}
+	public void UpdateNode()
+	{
+		this.name = "node (" + _nodeNumber + ")";
+		TextMesh tm = this.GetComponentInChildren<TextMesh> ();
+		tm.text = _nodeNumber.ToString ();
 
+	}
 	public void UpdateEdgeList()
 	{
 		GameObject obj = null;
