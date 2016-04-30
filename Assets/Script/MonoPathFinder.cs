@@ -30,7 +30,7 @@ public class MonoPathFinder : MonoBehaviour
 		//_searchDFS.Init (_graph, 0, 10);
 		//List<int> pathList = _searchDFS.GetPathToTarget ();
 
-		this.LoadGraphNode ();
+		//this.LoadGraphNode ();
 
 		//Debug.DrawLine(Vector3.zero, new Vector3(1, 1, 0), Color.red);
 		//Debug.Assert (false, "sdfsdfsdfsdf assert");
@@ -77,6 +77,7 @@ public class MonoPathFinder : MonoBehaviour
 
 			//---------------
 			_loadXML = false;
+
 		}
 
 		if (true == _updateNode) 
