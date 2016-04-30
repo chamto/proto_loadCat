@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root>
+  <NodeInfo nodeNum="0" >
+    <n0 edgeNum="1"  />
+    <n1 edgeNum="2"  />
+    <n2 edgeNum="3"  />
+  </NodeInfo>
+  <NodeInfo nodeNum="1" >
+    <n0 edgeNum="2"  />
+    <n1 edgeNum="3"  />
+    <n2 edgeNum="4"  />
+  </NodeInfo>
+</root>

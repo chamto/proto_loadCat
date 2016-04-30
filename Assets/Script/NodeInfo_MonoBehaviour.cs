@@ -6,12 +6,12 @@ using System.Collections.Generic;
 public class NodeInfo_MonoBehaviour : MonoBehaviour 
 {
 	//[SerializeField]
+	public int _nodeNumber = -1;
 
-	public int nodeNumber = -1;
-	public List<int> adjacencyEdgeList = new List<int>();
-	public Dictionary<int,LineRenderer> lineList = new Dictionary<int,LineRenderer>();
+	public List<int> _adjacencyEdgeList = new List<int>();
+	public Dictionary<int,LineRenderer> _lineList = new Dictionary<int,LineRenderer>();
 
-	public bool isUpdateValue = true;
+	public bool _isUpdateValue = true;
 
 		
 	void Start () 
@@ -21,12 +21,12 @@ public class NodeInfo_MonoBehaviour : MonoBehaviour
 
 	void Update () 
 	{
-		if (isUpdateValue) 
+		if (_isUpdateValue) 
 		{
 
 			this.UpdateEdgeList();
 
-			isUpdateValue = false;
+			_isUpdateValue = false;
 		}
 
 	}
@@ -35,36 +35,36 @@ public class NodeInfo_MonoBehaviour : MonoBehaviour
 	{
 		GameObject obj = null;
 		LineRenderer line = null;
-		foreach (int nodeNum in adjacencyEdgeList) 
+		foreach (int nodeNum in _adjacencyEdgeList) 
 		{
-			if(false == lineList.TryGetValue(nodeNum, out line))
+			if(false == _lineList.TryGetValue(nodeNum, out line))
 			{
 				obj = new GameObject();
 				line = obj.AddComponent<LineRenderer>();
-				lineList.Add(nodeNum, line);
+				_lineList.Add(nodeNum, line);
 
 				line.transform.parent = this.transform;
-				line.SetWidth (0.1f, 0.3f);
+				line.SetWidth (0.05f, 0.1f);
 				line.useWorldSpace = false;
 			}
-			line.name = this.nodeNumber + "->" + nodeNum;
+			line.name = this._nodeNumber + "->" + nodeNum;
 			line.SetPosition (0, this.transform.position); //from
 			line.SetPosition (1, this.NodeToPos(nodeNum)); //to
 		}
 
 		//인접엣지리스트에 없는 엣지선들을 제거한다.
 		List<int> removeList = new List<int> ();
-		foreach (int key in lineList.Keys) 
+		foreach (int key in _lineList.Keys) 
 		{
-			if(false == adjacencyEdgeList.Contains(key))
+			if(false == _adjacencyEdgeList.Contains(key))
 			{
 				removeList.Add(key);
 			}
 		}
 		foreach (int key in removeList) 
 		{
-			GameObject.Destroy(lineList[key].gameObject);
-			lineList.Remove(key);
+			GameObject.Destroy(_lineList[key].gameObject);
+			_lineList.Remove(key);
 		}
 	}
 

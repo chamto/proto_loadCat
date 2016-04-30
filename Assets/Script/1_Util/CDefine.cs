@@ -8,6 +8,24 @@ using System.Globalization;
 
 public class CDefine 
 {
+	
+	#if UNITY_EDITOR
+	public const string CURRENT_PLATFORM = "UNITY_EDITOR";
+	public static string ASSET_PATH = "file://" + UnityEngine.Application.dataPath + "/StreamingAssets/";
+	#elif UNITY_IPHONE
+	public const string CURRENT_PLATFORM = "UNITY_IPHONE";
+	public static string ASSET_PATH = "file://" + UnityEngine.Application.dataPath + "/Raw/";
+	#elif UNITY_ANDROID
+	public const string CURRENT_PLATFORM = "UNITY_ANDROID";
+	public static string ASSET_PATH = "jar:file://" + UnityEngine.Application.dataPath + "!/assets/";
+	#elif SERVER
+	public const string CURRENT_PLATFORM = "SERVER";
+	public static string ASSET_PATH = "Data_KOR\\";
+	#elif TOOL
+	public const string CURRENT_PLATFORM = "TOOL";
+	public static string ASSET_PATH = "Data_KOR\\";
+	#endif
+
 
 #if UNITY_EDITOR
     static bool m_DebugLogView = true;
