@@ -2442,6 +2442,7 @@ MonoBehaviour:
   _town: {fileID: 1484500977}
   _saveXML: 0
   _loadXML: 0
+  _updateNode: 0
 --- !u!1001 &1404938820
 Prefab:
   m_ObjectHideFlags: 0
