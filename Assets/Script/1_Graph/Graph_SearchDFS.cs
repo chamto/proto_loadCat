@@ -55,7 +55,8 @@ public class Graph_SearchDFS
 		while (0 != stack.Count)
 		{
 			//grab the next edge
-			GraphEdge Next = stack.Pop();
+			GraphEdge Next = stack.Peek();
+			//Debug.Log(Next); //chamto test
 			
 			//remove the edge from the stack
 			stack.Pop();
@@ -94,8 +95,7 @@ public class Graph_SearchDFS
 		return false;
 	}
 
-	public void
-		Init( SparseGraph  graph,
+	public void Init( SparseGraph  graph,
 		                int          source,
 		                int          target )
 	{  
@@ -111,8 +111,11 @@ public class Graph_SearchDFS
 
 		for (int i=0; i<m_Graph.NumNodes(); i++) 
 		{
-			m_Visited[i] = (int)Aid.unvisited;
-			m_Route[i] = (int)Aid.no_parent_assigned;
+			//Debug.Log(m_Graph.NumNodes() + " : " + i); //chamto test
+			m_Visited.Add((int)Aid.unvisited);
+			m_Route.Add((int)Aid.no_parent_assigned);
+			//m_Visited[i] = (int)Aid.unvisited;
+			//m_Route[i] = (int)Aid.no_parent_assigned;
 		}
 
 		m_bFound = Search(); 

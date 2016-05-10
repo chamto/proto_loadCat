@@ -84,7 +84,7 @@ public class NodeInfo_MonoBehaviour : MonoBehaviour
 		{
 			return obj.transform.position;
 		}
-		
+		//Debug.Log("<color=red>Failure objectFind From NodeToPos : </color>" + nodeNum); //chamto test
 		return Vector3.zero;
 	}
 

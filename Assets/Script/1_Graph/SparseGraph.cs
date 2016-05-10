@@ -193,7 +193,7 @@ public class SparseGraph
 	{
 		//first make sure the from and to nodes exist within the graph 
 		Assert.IsTrue( (edge.From() < m_iNextNodeIndex) && (edge.To() < m_iNextNodeIndex) ,
-		       "<SparseGraph::AddEdge>: invalid node index");
+		              "<SparseGraph::AddEdge>: invalid node index" + " edge:" + edge.From() + "->" + edge.To() + " NextNode : " + m_iNextNodeIndex);
 		
 		//make sure both nodes are active before adding the edge
 		if ( (m_Nodes[edge.To()].Index() != GraphNode.INVALID_NODE_INDEX) && 

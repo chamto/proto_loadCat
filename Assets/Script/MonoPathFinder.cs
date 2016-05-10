@@ -12,7 +12,7 @@ public class MonoPathFinder : MonoBehaviour
 	private SparseGraph 	_graph = new SparseGraph (true);
 	private Graph_SearchDFS _searchDFS = new Graph_SearchDFS();
 
-	private Table.CTableNodeInfo _table = new Table.CTableNodeInfo ();
+	//private Table.CTableNodeInfo _table = new Table.CTableNodeInfo ();
 
 	public Transform _town = null;
 
@@ -23,40 +23,52 @@ public class MonoPathFinder : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		_graph.AddNode (new NavGraphNode (0, Vector2.zero));
-		//_graph.AddEdge (new GraphEdge (0, 1));
+		Table.CTableNodeInfo table = CSingleton<Table.ResourceManager>.Instance._nodeInfo;
+		foreach (Table.NodeInfo nodeFrom in table._data) 
+		{
+			_graph.AddNode (new NavGraphNode (nodeFrom.nodeNum, nodeFrom.nodePos));
+		}
+
+		foreach (Table.NodeInfo nodeFrom in table._data) 
+		{
+			foreach(int edgeTo in nodeFrom.edgeList)
+			{
+				_graph.AddEdge (new GraphEdge (nodeFrom.nodeNum, edgeTo));
+			}
+		}
+
+		_searchDFS.Init (_graph, 0, 17);
+		List<int> pathList = _searchDFS.GetPathToTarget ();
+		string nodeChaine = "nodeChange : ";
+		foreach (int node in pathList) 
+		{
+			nodeChaine += node + "->";
+		}
+		Debug.Log (nodeChaine);
 
 
-		//_searchDFS.Init (_graph, 0, 10);
-		//List<int> pathList = _searchDFS.GetPathToTarget ();
-
-		//this.LoadGraphNode ();
+		//this.fix_LoadGraphNode ();
 
 		//Debug.DrawLine(Vector3.zero, new Vector3(1, 1, 0), Color.red);
 		//Debug.Assert (false, "sdfsdfsdfsdf assert");
-
-
-		//fileLoding
-		CSingleton<WideUseCoroutine>.Instance.StartCoroutine (_table.LoadXML (), null, false, "CTableNodeInfo");
-
-
-		//_table.PrintValue ();
 
 	}
 	
 
 	void Update () 
 	{
+
 		if (true == _saveXML) 
 		{
+			Table.CTableNodeInfo table = CSingleton<Table.ResourceManager>.Instance._nodeInfo;
 			List<Table.NodeInfo> saveList = new List<Table.NodeInfo>();
 			NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(false);
 			foreach (NodeInfo_MonoBehaviour mono in monoList) 
 			{
 				saveList.Add(new Table.NodeInfo(mono._nodeNumber, mono.transform.position, mono._adjacencyEdgeList));
 			}
-			_table._data = saveList;
-			_table.SaveXML ("Assets/StreamingAssets/"+"townNode.xml", _table._data);
+			table._data = saveList;
+			table.SaveXML ("Assets/StreamingAssets/"+"townNode.xml", table._data);
 
 			//---------------
 			_saveXML = false;
@@ -64,12 +76,13 @@ public class MonoPathFinder : MonoBehaviour
 
 		if (true == _loadXML) 
 		{
+			Table.CTableNodeInfo table = CSingleton<Table.ResourceManager>.Instance._nodeInfo;
 			NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(false);
 			foreach(NodeInfo_MonoBehaviour mono in monoList)
 			{
 				GameObject.Destroy(mono.gameObject);
 			}
-			foreach(Table.NodeInfo info in _table._data)
+			foreach(Table.NodeInfo info in table._data)
 			{
 				this.AddNodePrefab(info);
 			}
@@ -93,7 +106,7 @@ public class MonoPathFinder : MonoBehaviour
 		}
 	}
 
-	public void LoadGraphNode()
+	public void fix_LoadGraphNode()
 	{
 		NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(true);
 		foreach (NodeInfo_MonoBehaviour mono in monoList) 
@@ -102,12 +115,10 @@ public class MonoPathFinder : MonoBehaviour
 		}
 
 
-		this.loadAdjacencyEdgeList ();
+
 	}
 
-	private void loadAdjacencyEdgeList()
-	{
-	}
+
 	public void AddNodePrefab(Table.NodeInfo info)
 	{
 		GameObject obj = this.CreatePrefab ("node (-1)");
@@ -129,68 +140,118 @@ public class MonoPathFinder : MonoBehaviour
 	}
 }
 
-public class XML_Manager
-{
-	//ex) XML_Manager.AsyncFileLoading(CDefine.ASSET_PATH + m_strFileName, value => stream = value)
-	public static IEnumerator AsyncFileLoading(string strFilePath, System.Action<MemoryStream> result = null)
-	{
-		MemoryStream memStream = null;
-		#if SERVER || TOOL 
-		{
-			//CDefine.CommonLog("1__" + strFilePath); //chamto test
-			memStream = new MemoryStream(File.ReadAllBytes(strFilePath));
-		}
-		
-		#elif UNITY_IPHONE || UNITY_ANDROID || UNITY_EDITOR
-		{
-
-			UnityEngine.WWW wwwUrl = new UnityEngine.WWW(strFilePath);
-
-
-			while (!wwwUrl.isDone)
-			{   
-				if (wwwUrl.error != null)
-				{
-					CDefine.DebugLog("error : " + wwwUrl.error.ToString());
-					yield break;
-				}
-				CDefine.DebugLog("wwwUrl.progress---" + wwwUrl.progress);
-				yield return null;
-			}
-			
-			if (wwwUrl.isDone)
-			{   
-				CDefine.DebugLog("wwwUrl.isDone---size : "+wwwUrl.size);
-				CDefine.DebugLog("wwwUrl.isDone---bytesLength : "+wwwUrl.bytes.Length);
-				memStream = new MemoryStream(wwwUrl.bytes);
-			}
-		}
-		#endif
-
-		
-		if (null != result)
-		{   
-			result(memStream);
-		}
-		CDefine.DebugLog("AsyncLoading complete");
-		yield return memStream;
-	}
-
-
-	public void Load()
-	{
-
-	}
-	
-	public void Save()
-	{
-		
-	}
-	
-}
-
 namespace Table
 {
+	public class ResourceManager
+	{
+
+		public CTableNodeInfo _nodeInfo = new CTableNodeInfo();
+
+
+
+		//ex) XML_Manager.AsyncFileLoading(CDefine.ASSET_PATH + m_strFileName, value => stream = value)
+		public static IEnumerator AsyncFileLoading(string strFilePath, System.Action<MemoryStream> result = null)
+		{
+			MemoryStream memStream = null;
+			#if SERVER || TOOL 
+			{
+				//CDefine.CommonLog("1__" + strFilePath); //chamto test
+				memStream = new MemoryStream(File.ReadAllBytes(strFilePath));
+			}
+			
+			#elif UNITY_IPHONE || UNITY_ANDROID || UNITY_EDITOR
+			{
+
+				UnityEngine.WWW wwwUrl = new UnityEngine.WWW(strFilePath);
+
+
+				while (!wwwUrl.isDone)
+				{   
+					if (wwwUrl.error != null)
+					{
+						CDefine.DebugLog("error : " + wwwUrl.error.ToString());
+						yield break;
+					}
+					CDefine.DebugLog("wwwUrl.progress---" + wwwUrl.progress);
+					yield return null;
+				}
+				
+				if (wwwUrl.isDone)
+				{   
+					CDefine.DebugLog("wwwUrl.isDone---size : "+wwwUrl.size);
+					CDefine.DebugLog("wwwUrl.isDone---bytesLength : "+wwwUrl.bytes.Length);
+					memStream = new MemoryStream(wwwUrl.bytes);
+				}
+			}
+			#endif
+
+			
+			if (null != result)
+			{   
+				result(memStream);
+			}
+			CDefine.DebugLog("AsyncLoading complete");
+			yield return memStream;
+		}
+
+
+		public IEnumerator UnityFileLoading()
+		{
+			string strFilePath = CDefine.ASSET_PATH + "townNode.xml";
+			CDefine.DebugLog ("-------------" + strFilePath + "-------------");
+
+
+			MemoryStream memStream = null;
+
+			{
+				
+				UnityEngine.WWW wwwUrl = new UnityEngine.WWW(strFilePath);
+				
+				
+				while (!wwwUrl.isDone)
+				{   
+					if (wwwUrl.error != null)
+					{
+						CDefine.DebugLog("error : " + wwwUrl.error.ToString());
+						yield break;
+					}
+					CDefine.DebugLog("wwwUrl.progress---" + wwwUrl.progress);
+					yield return null;
+				}
+				
+				if (wwwUrl.isDone)
+				{   
+					CDefine.DebugLog("wwwUrl.isDone---size : "+wwwUrl.size);
+					CDefine.DebugLog("wwwUrl.isDone---bytesLength : "+wwwUrl.bytes.Length);
+					memStream = new MemoryStream(wwwUrl.bytes);
+				}
+			}
+
+			_nodeInfo.LoadXMLFromMemory (memStream); //chamto test
+			
+
+			CDefine.DebugLog("AsyncLoading complete");
+			yield return memStream;
+		}
+
+
+
+		public void Load()
+		{
+			//fileLoding
+			//CSingleton<WideUseCoroutine>.Instance.Start_Sync (_nodeInfo.LoadXML (), null, "CTableNodeInfo");
+			CSingleton<WideUseCoroutine>.Instance.Start_Async (_nodeInfo.LoadXML (), null, "CTableNodeInfo");
+		}
+
+		public bool IsCompleteLoad()
+		{
+			return _nodeInfo.bCompleteLoad;
+		}
+		
+
+
+	}
+
 	public class NodeInfo 
 	{
 		public int nodeNum = -1;
@@ -214,7 +275,13 @@ namespace Table
 			return temp;
 		}
 	}
-	public class CTableNodeInfo
+
+//	public interface ILoadXML
+//	{
+//		void ILoadXMLFromMemory(MemoryStream stream);
+//	}
+
+	public class CTableNodeInfo //: ILoadXML
 	{
 
 
@@ -240,28 +307,7 @@ namespace Table
 			}
 		}
 
-		//WidUseCoroutine 으로 사용해야 동작함. 유니티코루틴으로는 동작안함
-		//ex) CSingleton<WideUseCoroutine>.Instance.StartCoroutine (t.LoadXML (), null, false, "CTableNodeInfo");
-		public IEnumerator LoadXML()
-		{
-			//내부 코루틴 부분
-			//------------------------------------------------------------------------
-			CDefine.DebugLog(CDefine.ASSET_PATH + m_strFileName); //chamto test
-			MemoryStream stream = null;
-			yield return XML_Manager.AsyncFileLoading(CDefine.ASSET_PATH + m_strFileName, value => stream = value);
 
-			if (null == stream)
-			{
-				CDefine.DebugLog("error : failed LoadFromFile : " + CDefine.ASSET_PATH + m_strFileName);
-				yield break;
-			}
-			this.loadXMLFromMemory (stream);
-
-			//chamto test
-			//PrintValue ();
-			//SaveXML ("Assets/StreamingAssets/"+"abc.xml", _data);
-
-		}
 		public  Vector3 Vector3FromString(string s)
 		{
 			char[] delimiterChars = { ' ', ',' , '(' , ')' };
@@ -280,8 +326,30 @@ namespace Table
 				float.Parse(parts[2]));
 		}
 
+		//WidUseCoroutine 으로 사용해야 동작함. 유니티코루틴으로는 동작안함
+		//ex) CSingleton<WideUseCoroutine>.Instance.StartCoroutine (t.LoadXML (), null, false, "CTableNodeInfo");
+		public IEnumerator LoadXML()
+		{
+			//내부 코루틴 부분
+			//------------------------------------------------------------------------
+			CDefine.DebugLog(CDefine.ASSET_PATH + m_strFileName); //chamto test
+			MemoryStream stream = null;
+			yield return ResourceManager.AsyncFileLoading(CDefine.ASSET_PATH + m_strFileName, value => stream = value);
+			
+			if (null == stream)
+			{
+				CDefine.DebugLog("error : failed LoadFromFile : " + CDefine.ASSET_PATH + m_strFileName);
+				yield break;
+			}
+			this.LoadXMLFromMemory (stream);
+			
+			//chamto test
+			//PrintValue ();
+			//SaveXML ("Assets/StreamingAssets/"+"abc.xml", _data);
+			
+		}
 		
-		private void loadXMLFromMemory(MemoryStream stream)
+		public void LoadXMLFromMemory(MemoryStream stream)
 		{
 			_bCompleteLoad = false;
 			_data.Clear();

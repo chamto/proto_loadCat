@@ -30,7 +30,7 @@ public class CDefine
 #if UNITY_EDITOR
     static bool m_DebugLogView = true;
 #else
-	static bool m_DebugLogView = false;
+	static bool m_DebugLogView = true;
 #endif
 
     //static CommonNet.CEzLog m_Log = null;  

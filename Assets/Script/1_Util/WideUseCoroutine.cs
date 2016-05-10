@@ -50,6 +50,8 @@ using System.IO;
 
 public class WideUseCoroutine 
 {
+	public const bool MODE_SYNCHRONOUS = false;
+	public const bool MODE_ASYNCHRONOUS = true;
 
     //-------------------------------------------------------------------------------------
     //                               씨샵에서의 코루틴 호출함수
@@ -78,6 +80,16 @@ public class WideUseCoroutine
 //	{
 //		return routine;
 //	}
+
+	public void Start_Sync(IEnumerator routine, coroutineCallBack callBack = null, string strName = "")
+	{
+		this.StartCoroutine(routine, callBack, MODE_SYNCHRONOUS, strName );
+	}
+
+	public void Start_Async(IEnumerator routine, coroutineCallBack callBack = null, string strName = "")
+	{
+		this.StartCoroutine(routine, callBack, MODE_ASYNCHRONOUS, strName );
+	}
 
     public void StartCoroutine(IEnumerator routine, coroutineCallBack callBack = null, bool asynchronous = false, string strName = "")
     {
