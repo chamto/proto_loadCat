@@ -501,7 +501,7 @@ GameObject:
   - 61: {fileID: 245712309}
   m_Layer: 0
   m_Name: bound_bottom
-  m_TagString: Untagged
+  m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -669,7 +669,7 @@ GameObject:
   - 61: {fileID: 335856521}
   m_Layer: 0
   m_Name: bound_left
-  m_TagString: Untagged
+  m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2267,7 +2267,7 @@ GameObject:
   - 61: {fileID: 1281811754}
   m_Layer: 0
   m_Name: bound_right
-  m_TagString: Untagged
+  m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2308,7 +2308,7 @@ GameObject:
   - 61: {fileID: 1365925642}
   m_Layer: 0
   m_Name: bound_top
-  m_TagString: Untagged
+  m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2379,7 +2379,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 5051402, guid: 361e076a7d1bf440cb3c2ab6b44991ea, type: 2}
       propertyPath: m_Mass
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 142858, guid: 361e076a7d1bf440cb3c2ab6b44991ea, type: 2}
       propertyPath: m_IsActive

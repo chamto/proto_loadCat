@@ -110,7 +110,7 @@ public class MonoPathFinder : MonoBehaviour
 //
 //	}
 
-	public List<Vector3> Search(Vector3 srcPos, Vector3 destPos)
+	public Stack<Vector3> Search(Vector3 srcPos, Vector3 destPos)
 	{
 		NavGraphNode destNode = _graph.FindNearNode (destPos);
 		NavGraphNode srcNode = _graph.FindNearNode (srcPos);
@@ -118,25 +118,25 @@ public class MonoPathFinder : MonoBehaviour
 
 		_searchDFS.Init (_graph, srcNode.Index(), destNode.Index());
 		List<int> pathList = _searchDFS.GetPathToTarget ();
-		pathList.Reverse ();
+		//pathList.Reverse ();
 
 		//-------- chamto test --------
 		string nodeChaine = "nodeChaine : ";
 		foreach (int node in pathList) 
 		{
-			nodeChaine += node + "->";
+			nodeChaine += node + "<-";
 		}
 		Debug.Log (nodeChaine); 
 		//-------- ------------ --------
 
-		List<Vector3> pathPos = new List<Vector3> ();
-		pathPos.Add (srcPos);
+		Stack<Vector3> pathPos = new Stack<Vector3> ();
+		pathPos.Push (destPos);
 		foreach(int node in pathList) 
 		{
 			tempNode = _graph.GetNode(node) as NavGraphNode;
-			pathPos.Add(tempNode.Pos());
+			pathPos.Push(tempNode.Pos());
 		}
-		pathPos.Add (destPos);
+		//pathPos.Push (srcPos);
 
 		return pathPos;
 

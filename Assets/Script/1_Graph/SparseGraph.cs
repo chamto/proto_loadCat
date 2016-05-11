@@ -75,6 +75,7 @@ public class SparseGraph
 		m_bDigraph = digraph;
 	}
 
+	//다른 노드와 연결이 없는 닫혀있는 노드인지 확인한다
 	public bool ClosedNode(int node)
 	{
 		EdgeList list = this.GetEdges (node);
