@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Linq;
 //using System.String;
 
 
@@ -37,14 +38,7 @@ public class MonoPathFinder : MonoBehaviour
 			}
 		}
 
-//		_searchDFS.Init (_graph, 0, 17);
-//		List<int> pathList = _searchDFS.GetPathToTarget ();
-//		string nodeChaine = "nodeChange : ";
-//		foreach (int node in pathList) 
-//		{
-//			nodeChaine += node + "->";
-//		}
-//		Debug.Log (nodeChaine); //chamto test
+
 
 
 
@@ -116,12 +110,37 @@ public class MonoPathFinder : MonoBehaviour
 //
 //	}
 
-//	public int FindNearNode_From(Vector3 current)
-//	{
-//		Table.CTableNodeInfo table = CSingleton<Table.ResourceManager>.Instance._nodeInfo;
-//
-//
-//	}
+	public List<Vector3> Search(Vector3 srcPos, Vector3 destPos)
+	{
+		NavGraphNode destNode = _graph.FindNearNode (destPos);
+		NavGraphNode srcNode = _graph.FindNearNode (srcPos);
+		NavGraphNode tempNode = null;
+
+		_searchDFS.Init (_graph, srcNode.Index(), destNode.Index());
+		List<int> pathList = _searchDFS.GetPathToTarget ();
+		pathList.Reverse ();
+
+		//-------- chamto test --------
+		string nodeChaine = "nodeChaine : ";
+		foreach (int node in pathList) 
+		{
+			nodeChaine += node + "->";
+		}
+		Debug.Log (nodeChaine); 
+		//-------- ------------ --------
+
+		List<Vector3> pathPos = new List<Vector3> ();
+		pathPos.Add (srcPos);
+		foreach(int node in pathList) 
+		{
+			tempNode = _graph.GetNode(node) as NavGraphNode;
+			pathPos.Add(tempNode.Pos());
+		}
+		pathPos.Add (destPos);
+
+		return pathPos;
+
+	}
 
 
 	public void AddNodePrefab(Table.NodeInfo info)

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class CatMove_MonoBehaviour : MonoBehaviour 
 {
 	private MonoPathFinder _pathFinder = null;
-	private List<int> _pathPos = null;
+	private List<Vector3> _pathPos = null;
 	private Vector3 _destPos = Vector3.zero;
 	private Rigidbody2D _rb2d = null;
 
@@ -26,9 +26,11 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 
 		if (true == Input_Unity.IsTouch ()) 
 		{
-			
 			_destPos = Input_Unity.GetTouchWorldPos ();
 			_destPos.z = 0;
+			_pathPos = _pathFinder.Search(transform.position, _destPos);
+
+
 			dir = _destPos - transform.position;
 		}
 
@@ -94,8 +96,8 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	{
 
 
-		NavGraphNode node = _pathFinder._graph.FindNearNode (Input_Unity.GetTouchWorldPos ());
-		Debug.Log ("findNode : "+node); //chamto test
+		//NavGraphNode node = _pathFinder._graph.FindNearNode (Input_Unity.GetTouchWorldPos ());
+		//Debug.Log ("findNode : "+node); //chamto test
 
 
 		//chamto test code - layer collision test

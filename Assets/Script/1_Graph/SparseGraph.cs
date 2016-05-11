@@ -75,6 +75,16 @@ public class SparseGraph
 		m_bDigraph = digraph;
 	}
 
+	public bool ClosedNode(int node)
+	{
+		EdgeList list = this.GetEdges (node);
+		if (null != list && 0 != list.Count) 
+		{
+			return false;
+		}
+		return true;
+	}
+
 	public NavGraphNode FindNearNode(Vector2 pos)
 	{
 		Dictionary<int , float> magList = new Dictionary<int , float> ();
@@ -93,10 +103,15 @@ public class SparseGraph
 		}
 
 		magList = magList.OrderBy (x=> x.Value).ToDictionary(x=>x.Key, x=>x.Value);
-		if (true == magList.TryGetValue (0, out outValue)) 
+		foreach (int nodeNum in magList.Keys) 
 		{
-			findNode = m_Nodes.ElementAt(magList.ElementAt(0).Key) as NavGraphNode;
+			if (false == this.ClosedNode(nodeNum)) 
+			{
+				findNode = m_Nodes.ElementAt(nodeNum) as NavGraphNode;
+				break;
+			}
 		}
+
 
 		return findNode;
 	}

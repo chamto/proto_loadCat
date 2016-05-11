@@ -165,5 +165,8 @@
     <n1 edgeNum="35" />
     <n2 edgeNum="37" />
   </NodeInfo>
-  <NodeInfo nodeNum="37" nodePos="(2.0, -3.1, 0.0)" />
+  <NodeInfo nodeNum="37" nodePos="(2.0, -3.1, 0.0)">
+    <n0 edgeNum="5" />
+    <n1 edgeNum="36" />
+  </NodeInfo>
 </root>
