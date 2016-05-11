@@ -9,10 +9,10 @@ using System.Xml;
 public class MonoPathFinder : MonoBehaviour 
 {
 
-	private SparseGraph 	_graph = new SparseGraph (true);
-	private Graph_SearchDFS _searchDFS = new Graph_SearchDFS();
+	public SparseGraph 	_graph = new SparseGraph (true);
+	public Graph_SearchDFS _searchDFS = new Graph_SearchDFS();
 
-	//private Table.CTableNodeInfo _table = new Table.CTableNodeInfo ();
+
 
 	public Transform _town = null;
 
@@ -37,17 +37,17 @@ public class MonoPathFinder : MonoBehaviour
 			}
 		}
 
-		_searchDFS.Init (_graph, 0, 17);
-		List<int> pathList = _searchDFS.GetPathToTarget ();
-		string nodeChaine = "nodeChange : ";
-		foreach (int node in pathList) 
-		{
-			nodeChaine += node + "->";
-		}
-		Debug.Log (nodeChaine);
+//		_searchDFS.Init (_graph, 0, 17);
+//		List<int> pathList = _searchDFS.GetPathToTarget ();
+//		string nodeChaine = "nodeChange : ";
+//		foreach (int node in pathList) 
+//		{
+//			nodeChaine += node + "->";
+//		}
+//		Debug.Log (nodeChaine); //chamto test
 
 
-		//this.fix_LoadGraphNode ();
+
 
 		//Debug.DrawLine(Vector3.zero, new Vector3(1, 1, 0), Color.red);
 		//Debug.Assert (false, "sdfsdfsdfsdf assert");
@@ -106,17 +106,22 @@ public class MonoPathFinder : MonoBehaviour
 		}
 	}
 
-	public void fix_LoadGraphNode()
-	{
-		NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(true);
-		foreach (NodeInfo_MonoBehaviour mono in monoList) 
-		{
-			Debug.Log("<color=red>Load Number:</color>" + mono._nodeNumber);
-		}
+//	public void fix_LoadGraphNode()
+//	{
+//		NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(true);
+//		foreach (NodeInfo_MonoBehaviour mono in monoList) 
+//		{
+//			Debug.Log("<color=red>Load Number:</color>" + mono._nodeNumber);
+//		}
+//
+//	}
 
-
-
-	}
+//	public int FindNearNode_From(Vector3 current)
+//	{
+//		Table.CTableNodeInfo table = CSingleton<Table.ResourceManager>.Instance._nodeInfo;
+//
+//
+//	}
 
 
 	public void AddNodePrefab(Table.NodeInfo info)

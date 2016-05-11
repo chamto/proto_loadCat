@@ -1,16 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CatMove_MonoBehaviour : MonoBehaviour 
 {
-	public Vector3 destPos = Vector3.zero;
-	public Rigidbody2D rb2d = null;
+	private MonoPathFinder _pathFinder = null;
+	private List<int> _pathPos = null;
+	private Vector3 _destPos = Vector3.zero;
+	private Rigidbody2D _rb2d = null;
 
 
 	// Use this for initialization
 	void Start () 
 	{
-		rb2d = this.GetComponent<Rigidbody2D> ();
+		GameObject objMgr = GameObject.Find("0_manager");
+		_pathFinder = objMgr.GetComponent<MonoPathFinder> ();
+		_rb2d = this.GetComponent<Rigidbody2D> ();
 	}
 	
 
@@ -19,25 +24,33 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	{
 		Vector3 dir = Vector3.zero;
 
+		if (true == Input_Unity.IsTouch ()) 
+		{
+			
+			_destPos = Input_Unity.GetTouchWorldPos ();
+			_destPos.z = 0;
+			dir = _destPos - transform.position;
+		}
+
 		if(true == Input_Unity.IsTouch())
 		{
 
-			destPos = Input_Unity.GetTouchWorldPos ();
-			destPos.z = 0;
-			dir = destPos - transform.position;
+			_destPos = Input_Unity.GetTouchWorldPos ();
+			_destPos.z = 0;
+			dir = _destPos - transform.position;
 
 
 			//Debug.Log("Force : " + rb2d.velocity.sqrMagnitude); //chamto test
-			if(rb2d.velocity.sqrMagnitude >= 100.0f)
-				rb2d.AddForce (dir, ForceMode2D.Force);
+			if(_rb2d.velocity.sqrMagnitude >= 100.0f)
+				_rb2d.AddForce (dir, ForceMode2D.Force);
 			else
-				rb2d.AddForce (dir, ForceMode2D.Impulse);
+				_rb2d.AddForce (dir, ForceMode2D.Impulse);
 			
 			//rb2d.MovePosition(destPos);
 			//rb2d.AddForceAtPosition(dir, destPos, ForceMode2D.Impulse);
 		}
 
-		this.AniDirection (destPos - transform.position);
+		this.AniDirection (_destPos - transform.position);
 		//this.transform.position += dir * Time.deltaTime; 
 
 
@@ -79,6 +92,12 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 
 	void TouchBegan() 
 	{
+
+
+		NavGraphNode node = _pathFinder._graph.FindNearNode (Input_Unity.GetTouchWorldPos ());
+		Debug.Log ("findNode : "+node); //chamto test
+
+
 		//chamto test code - layer collision test
 		bool option = true;
 		option = Physics2D.GetIgnoreLayerCollision (LayerMask.NameToLayer ("SuperCat"), LayerMask.NameToLayer ("Building"));
@@ -112,7 +131,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		{
 			//Debug.Log("OnCollisionEnter2D : Building");
 
-			if(rb2d.velocity.sqrMagnitude >= 30.0f)
+			if(_rb2d.velocity.sqrMagnitude >= 30.0f)
 			{
 				//Vector2 pos = (Vector2)(transform.position) + rb2d.velocity.normalized * 1.5f;
 				

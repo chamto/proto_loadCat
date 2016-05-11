@@ -2,6 +2,7 @@
 using UnityEngine.Assertions;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 
 //성긴그래프
@@ -73,7 +74,33 @@ public class SparseGraph
 		m_iNextNodeIndex = 0; 
 		m_bDigraph = digraph;
 	}
-	
+
+	public NavGraphNode FindNearNode(Vector2 pos)
+	{
+		Dictionary<int , float> magList = new Dictionary<int , float> ();
+		List<Vector2> sort = new List<Vector2> ();
+		int index = 0;
+		float outValue;
+		NavGraphNode findNode = null;
+
+		foreach (NavGraphNode node in m_Nodes) 
+		{
+			if(null != node)
+			{
+				magList.Add(index, (pos - node.Pos()).sqrMagnitude);
+			}
+			index++;
+		}
+
+		magList = magList.OrderBy (x=> x.Value).ToDictionary(x=>x.Key, x=>x.Value);
+		if (true == magList.TryGetValue (0, out outValue)) 
+		{
+			findNode = m_Nodes.ElementAt(magList.ElementAt(0).Key) as NavGraphNode;
+		}
+
+		return findNode;
+	}
+
 	//returns the node at the given index
 	public  GraphNode  GetNode(int idx)
 	{
