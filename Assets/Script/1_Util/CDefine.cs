@@ -100,6 +100,27 @@ public class CDefine
 
     }
 
+	public static void DebugLogWhite(object message)
+	{
+		_BaseDebugLog("<color=white>"+message+"</color>",null,null, eDebugLogMode._None);
+	}
+	public static void DebugLogYellow(object message)
+	{
+		_BaseDebugLog("<color=yellow>"+message+"</color>",null,null, eDebugLogMode._None);
+	}
+	public static void DebugLogGreen(object message)
+	{
+		_BaseDebugLog("<color=green>"+message+"</color>",null,null, eDebugLogMode._None);
+	}
+	public static void DebugLogRed(object message)
+	{
+		_BaseDebugLog("<color=red>"+message+"</color>",null,null, eDebugLogMode._None);
+	}
+	public static void DebugLogBlue(object message)
+	{
+		_BaseDebugLog("<color=blue>"+message+"</color>",null,null, eDebugLogMode._None);
+	}
+
 	public static void DebugLog(object message)
     {
         

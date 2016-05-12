@@ -11,7 +11,8 @@ public class Loading_MonoBehaviour : MonoBehaviour
 	{
 
 		//StartCoroutine (CSingleton<Table.ResourceManager>.Instance.UnityFileLoading());
-		CSingleton<Table.ResourceManager>.Instance.Load();
+		//CSingleton<Table.ResourceManager>.Instance.Load();
+		Single.resource.Load_ASync ();
 	}
 
 
@@ -19,9 +20,8 @@ public class Loading_MonoBehaviour : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		CSingleton<WideUseCoroutine>.Instance.Update ();
-
-		if (true == CSingleton<Table.ResourceManager>.Instance.IsCompleteLoad()) 
+		//if (true == CSingleton<Table.ResourceManager>.Instance.IsCompleteLoad()) 
+		if (true == Single.resource.IsCompleteLoad()) 
 		{
 			if(true == this._loadScene)
 			{

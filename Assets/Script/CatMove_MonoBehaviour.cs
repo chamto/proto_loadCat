@@ -26,16 +26,16 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		_destPos = _pathPos.Pop ();
 		_destPos.z = 0;
 
-		if (null != _pathPos) 
-		{
-			//chamto test
-			temp = "Update - State :" + _STATE + " pathPos :";
-			foreach (Vector2 node in _pathPos) 
-			{
-				temp += node + "->";
-			}
-			Debug.Log (temp); 
-		}
+//		if (null != _pathPos) 
+//		{
+//			//chamto test
+//			temp = "Update - State :" + _STATE + " pathPos :";
+//			foreach (Vector2 node in _pathPos) 
+//			{
+//				temp += node + "->";
+//			}
+//			Debug.Log (temp); 
+//		}
 
 	}
 
@@ -81,7 +81,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 			_rb2d.MovePosition(_destPos);
 			_rb2d.velocity = Vector2.zero; //cat stop
 
-			Debug.Log("----------- Arrive On ----------- "); //chamto test
+			//Debug.Log("----------- Arrive On ----------- "); //chamto test
 			return true;
 		}
 		
@@ -92,12 +92,8 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	void OnCollisionExit2D(Collision2D coll) 
 	{
 		//Debug.Log("------OnCollisionExit2D : Building : sqrMag_vel : " + _rb2d.velocity.sqrMagnitude);
-		//this.gameObject.layer = LayerMask.NameToLayer ("Default");
 		_isContactBuilding = false;
-		//Vector2 v2 = _rb2d.position;
-		//v2 +=(Vector2)(_dir.normalized * 0.7f);
-		//_rb2d.position = v2;
-		//_rb2d.MovePosition (v2);
+
 	}
 
 	void OnCollisionEnter2D(Collision2D coll) 
@@ -112,7 +108,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		
 		if (coll.gameObject.tag == "Building") 
 		{
-			Debug.Log("------OnCollisionEnter2D : Building : sqrMag_vel : " + _rb2d.velocity.sqrMagnitude);
+			//Debug.Log("------OnCollisionEnter2D : Building : sqrMag_vel : " + _rb2d.velocity.sqrMagnitude);
 			_isContactBuilding = true;
 
 //			if(_rb2d.velocity.sqrMagnitude >= 0.2f)
