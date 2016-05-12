@@ -68,7 +68,10 @@ public class GlobalConstants : MonoBehaviour
 
 		public class Num
 		{
+			public static int default0 = LayerMask.NameToLayer("Default");
 			public static int building = LayerMask.NameToLayer("Building");
+			public static int superCat = LayerMask.NameToLayer("SuperCat");
+
 		}
 
 		public class Mask

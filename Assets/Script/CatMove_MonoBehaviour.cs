@@ -21,8 +21,8 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 
 	public void State_MoveNext()
 	{
-		Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("SuperCat"), LayerMask.NameToLayer ("Building"), true);
-		this.gameObject.layer = LayerMask.NameToLayer ("SuperCat");
+		Physics2D.IgnoreLayerCollision (GlobalConstants.Layer.Num.superCat, GlobalConstants.Layer.Num.building, true);
+		this.gameObject.layer = GlobalConstants.Layer.Num.superCat;
 		
 		_destPos = _pathPos.Pop ();
 		_destPos.z = 0;
@@ -75,7 +75,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	{
 		if(float.Epsilon <= _dir.sqrMagnitude && _dir.sqrMagnitude <= 0.15f)
 		{
-			this.gameObject.layer = LayerMask.NameToLayer ("Default");
+			this.gameObject.layer = GlobalConstants.Layer.Num.default0;
 
 			_rb2d.MovePosition(_destPos);
 			_rb2d.velocity = Vector2.zero; //cat stop
@@ -279,13 +279,13 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 
 		//chamto test code - layer collision test
 		bool option = true;
-		option = Physics2D.GetIgnoreLayerCollision (LayerMask.NameToLayer ("SuperCat"), LayerMask.NameToLayer ("Building"));
-		Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("SuperCat"), LayerMask.NameToLayer ("Building"), true);
+		option = Physics2D.GetIgnoreLayerCollision (GlobalConstants.Layer.Num.superCat, GlobalConstants.Layer.Num.building);
+		Physics2D.IgnoreLayerCollision (GlobalConstants.Layer.Num.superCat, GlobalConstants.Layer.Num.building, true);
 
-		if(this.gameObject.layer != LayerMask.NameToLayer ("SuperCat"))
-			this.gameObject.layer = LayerMask.NameToLayer ("SuperCat");
+		if(this.gameObject.layer != GlobalConstants.Layer.Num.superCat)
+			this.gameObject.layer = GlobalConstants.Layer.Num.superCat;
 		else
-			this.gameObject.layer = LayerMask.NameToLayer ("Default");
+			this.gameObject.layer = GlobalConstants.Layer.Num.default0;
 
 		DebugWide.Log ("began");
 	}
