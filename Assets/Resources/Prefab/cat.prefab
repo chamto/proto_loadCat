@@ -86,9 +86,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 401274}
+  - 114: {fileID: 11402058}
   - 95: {fileID: 9581796}
   - 114: {fileID: 11453114}
-  - 114: {fileID: 11402058}
   - 60: {fileID: 6056582}
   - 50: {fileID: 5051402}
   m_Layer: 0
@@ -216,7 +216,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 142858}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -2.3900001, y: -3.07999992, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 458472}
@@ -443,8 +443,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee765d836f680449d9f71a466ad55f9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destPos: {x: 0, y: 0, z: 0}
-  rb2d: {fileID: 0}
+  _moveMode: 0
+  _arriveMode: 0
+  _style: 0
 --- !u!114 &11453114
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -2,8 +2,38 @@
 using System.Collections;
 using System.Collections.Generic;
 
+namespace Cat
+{
+	public enum eMove
+	{
+		Normal,
+		JumpFly,
+		JumpRush,
+		Super,
+		Ninja,
+	}
+
+	public enum eArrive
+	{
+		Normal,
+		Good,
+		Grabber,
+	}
+
+	public enum eStyle
+	{
+		Normal,
+		Aggressive,
+	}
+}
+
 public class CatMove_MonoBehaviour : MonoBehaviour 
 {
+	//public Cat.eMove _moveMode = Cat.eMove.Normal;
+	public Cat.eMove _moveMode = Cat.eMove.JumpFly;
+	public Cat.eArrive _arriveMode = Cat.eArrive.Normal;
+	public Cat.eStyle _style = Cat.eStyle.Normal;
+
 	private MonoPathFinder _pathFinder = null;
 	private Stack<Vector3> _pathPos = new Stack<Vector3>();
 	private Vector3 _destPos = Vector3.zero;
@@ -27,6 +57,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		_destPos = _pathPos.Pop ();
 		_destPos.z = 0;
 
+		//_rb2d.velocity = Vector2.zero; //cat stop
 //		if (null != _pathPos) 
 //		{
 //			//chamto test
@@ -44,16 +75,10 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	{
 		_dir = _destPos - transform.position;
 
-		//--------------------------------
-		//liner moving
-		_rb2d.MovePosition(transform.position + (_destPos - transform.position) * 0.1f);
+
 		
 		//--------------------------------
-		//normal
-//		if(_rb2d.velocity.sqrMagnitude <= 20.8f)
-//			_rb2d.AddForce (_dir, ForceMode2D.Impulse); // ++ force
-//		else
-//			_rb2d.AddForce (_dir , ForceMode2D.Force); // == force
+
 		//_rb2d.AddForce (_dir, ForceMode2D.Force); // == force
 		//_rb2d.AddForce (_dir.normalized * 15, ForceMode2D.Force);
 		//_rb2d.AddForceAtPosition(_dir.normalized * 20, _destPos, ForceMode2D.Force);
@@ -61,13 +86,36 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 //		_rb2d.angularVelocity = 0f;
 //		_rb2d.angularDrag = 0f;
 //		_rb2d.drag = 0f;
-		//--------------------------------
-		//순간이동 닌자 느낌
-		//_rb2d.MovePosition(_destPos); 
 
-		//--------------------------------
-		//급한 느낌
-		//_rb2d.AddForceAtPosition(_dir, _destPos, ForceMode2D.Impulse);
+		if (Cat.eMove.Normal == _moveMode) 
+		{
+			//--------------------------------
+			//liner moving
+			_rb2d.MovePosition(transform.position + (_destPos - transform.position) * 0.1f);
+		}
+		if (Cat.eMove.JumpFly == _moveMode) 
+		{
+			if(_rb2d.velocity.sqrMagnitude <= 10.8f)
+				_rb2d.AddForce (_dir, ForceMode2D.Impulse); // ++ force
+			else
+				_rb2d.AddForce (_dir , ForceMode2D.Force); // == force
+		}
+		if (Cat.eMove.JumpRush == _moveMode) 
+		{
+			_rb2d.AddForceAtPosition(_dir, _destPos, ForceMode2D.Impulse);
+		}
+		if (Cat.eMove.Super == _moveMode) 
+		{
+			_rb2d.MovePosition(transform.position + (_destPos - transform.position) * 0.2f);
+
+		}
+		if (Cat.eMove.Ninja == _moveMode) 
+		{
+			//--------------------------------
+			//순간이동 닌자 느낌
+			_rb2d.MovePosition(_destPos); 
+		}
+
 
 	}
 
@@ -77,8 +125,14 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		{
 			this.gameObject.layer = GlobalConstants.Layer.Num.default0;
 
-			_rb2d.MovePosition(_destPos);
 			_rb2d.velocity = Vector2.zero; //cat stop
+
+			if(Cat.eStyle.Aggressive == _style)
+			{
+				//다른 고양이 밀치기 효과
+				_rb2d.MovePosition(_destPos); 
+			}
+
 
 			//Debug.Log("----------- Arrive On ----------- "); //chamto test
 			return true;
@@ -129,7 +183,8 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	int _STATE = 0; //chamto temp
 	Vector3 _dir = Vector3.zero;
 	string temp = "";
-	float sumTime = 0;
+	float sumTime1 = 0;
+	float sumTime2 = 0;
 	void Update ()
 	{
 
@@ -141,8 +196,17 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 			//DebugWide.LogRed(GlobalConstants.Hierarchy.gameViewArea); //chamto test
 			if( true == GlobalConstants.Hierarchy.gameViewArea.Contains(touchPos))
 			{
-				//_pathPos = _pathFinder.Search(transform.position, Input_Unity.GetTouchWorldPos ());
-				_pathFinder.SearchNonAlloc(transform.position, touchPos, ref _pathPos);
+				if (Cat.eMove.Super == _moveMode) 
+				{
+					_pathPos.Clear();
+					_pathPos.Push(touchPos);
+				}else
+				{
+					//_pathPos = _pathFinder.Search(transform.position, Input_Unity.GetTouchWorldPos ());
+					_pathFinder.SearchNonAlloc(transform.position, touchPos, ref _pathPos);
+				}
+
+
 				
 				_STATE = 1;
 				this.State_MoveNext();
@@ -154,33 +218,40 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		case 0: //idle
 		{
 			_dir = _destPos - transform.position;
+			sumTime1 += Time.deltaTime;
+			sumTime2 += Time.deltaTime;
 
-			//--------------------------------
-			//normal
-			//_rb2d.AddForce (_dir, ForceMode2D.Force); // == force
+			if(Cat.eArrive.Normal ==  _arriveMode)
+			{
+				//--------------------------------
+				//normal
+				//_rb2d.AddForce (_dir, ForceMode2D.Force); // == force
+			}
+			if(Cat.eArrive.Good ==  _arriveMode)
+			{
+				//--------------------------------
+				//서로 나누어 먹는 느낌
+//				if(_rb2d.velocity.sqrMagnitude <= 10.8f)
+					_rb2d.AddForceAtPosition(_dir, _destPos, ForceMode2D.Impulse); //++ force
+//				else
+//					_rb2d.velocity = Vector2.zero; //cat stop
 
-			//--------------------------------
-			//혼자 먹으려 싸우는 느낌
-			//_rb2d.MovePosition(_destPos); 
 
-			//--------------------------------
-			//서로 나누어 먹는 느낌
-			//_rb2d.AddForceAtPosition(_dir, _destPos, ForceMode2D.Impulse); //++ force
+			}
+			if(Cat.eArrive.Grabber ==  _arriveMode)
+			{
+				//--------------------------------
+				//혼자 먹으려 싸우는 느낌
+				_rb2d.MovePosition(_destPos); 
 
+			}
 
 		}
 			break;
 		case 1: //move to pos
 		{
 
-			//Debug.Log(sumTime + " : " + _rb2d.position + " : " + transform.position);
-			sumTime += Time.deltaTime;
-			//if(sumTime > 0.2f)
-			{
-				this.State_UpdateMoveToPos();
-				sumTime = 0;
-			}
-
+			this.State_UpdateMoveToPos();
 
 			if(true ==this.State_ArriveOn())
 			{
