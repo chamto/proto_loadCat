@@ -13,8 +13,7 @@ public class MonoPathFinder : MonoBehaviour
 	public SparseGraph 	_graph = new SparseGraph (true);
 	public Graph_SearchDFS _searchDFS = new Graph_SearchDFS();
 
-
-
+	
 	public Transform _town = null;
 
 	public bool _saveXML = false;
@@ -114,11 +113,84 @@ public class MonoPathFinder : MonoBehaviour
 //
 //	}
 
+	/// <summary>
+	/// Possibles the linear move.
+	/// </summary>
+	/// <returns><c>true</c>, if linear move was possibled, <c>false</c> otherwise.</returns>
+	/// <param name="srcPos">Source position.</param>
+	/// <param name="destPos">Destination position.</param>
+	/// <param name="layerMask">Layer mask.</param>
+	public bool PossibleLinearMove(Vector3 srcPos, Vector3 destPos, int layerMask)
+	{
+		if (0 == Physics2D.LinecastNonAlloc (srcPos, destPos, _preGenerated_raycasthit_PossibleLinearMove, layerMask)) 
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	// ---  PossibleLinearMove 함수전용 멤버변수 : 메모리재할당을 피하기 위해 미리생성된것을 사용하도록 한다.
+	private RaycastHit2D[] _preGenerated_raycasthit_PossibleLinearMove = new RaycastHit2D[1];
+	/// </summary>
+
+
+
+	public int SearchNonAlloc(Vector3 srcPos, Vector3 destPos, ref Stack<Vector3> pathPos)
+	{
+		NavGraphNode destNode = _graph.FindNearNode (destPos);
+		NavGraphNode srcNode = _graph.FindNearNode (srcPos);
+		NavGraphNode tempNode = null;
+
+		if (null == pathPos)
+			return 0;
+
+		if (true == this.PossibleLinearMove (srcPos, destPos, GlobalConstants.Layer.Mask.building)) 
+		{
+			if(null != pathPos) 
+			{
+				pathPos.Clear();
+				pathPos.Push(destPos);
+			}
+			return 1;
+		}
+		
+		_searchDFS.Init (_graph, srcNode.Index(), destNode.Index());
+		List<int> pathList = _searchDFS.GetPathToTarget ();
+		
+		//-------- chamto test --------
+//		string nodeChaine = "nodeChaine : ";
+//		foreach (int node in pathList) 
+//		{
+//			nodeChaine += node + "<-";
+//		}
+//		Debug.Log (nodeChaine); 
+		//-------- ------------ --------
+		
+
+		pathPos.Clear ();
+		pathPos.Push (destPos);
+		foreach(int node in pathList) 
+		{
+			tempNode = _graph.GetNode(node) as NavGraphNode;
+			pathPos.Push(tempNode.Pos());
+		}
+		//pathPos.Push (srcPos);
+		
+		return pathPos.Count;
+	}
+
 	public Stack<Vector3> Search(Vector3 srcPos, Vector3 destPos)
 	{
 		NavGraphNode destNode = _graph.FindNearNode (destPos);
 		NavGraphNode srcNode = _graph.FindNearNode (srcPos);
 		NavGraphNode tempNode = null;
+		Stack<Vector3> pathPos = new Stack<Vector3>();
+
+		if (true == this.PossibleLinearMove (srcPos, destPos, GlobalConstants.Layer.Mask.building)) 
+		{
+			pathPos.Push(destPos);
+			return pathPos;
+		}
 
 		_searchDFS.Init (_graph, srcNode.Index(), destNode.Index());
 		List<int> pathList = _searchDFS.GetPathToTarget ();
@@ -132,7 +204,7 @@ public class MonoPathFinder : MonoBehaviour
 		Debug.Log (nodeChaine); 
 		//-------- ------------ --------
 
-		Stack<Vector3> pathPos = new Stack<Vector3> ();
+
 		pathPos.Push (destPos);
 		foreach(int node in pathList) 
 		{

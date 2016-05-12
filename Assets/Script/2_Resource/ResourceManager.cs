@@ -29,17 +29,17 @@ public class ResourceManager
 			{   
 				if (wwwUrl.error != null)
 				{
-					CDefine.DebugLogRed("error : " + wwwUrl.error.ToString());
+					DebugWide.LogRed("error : " + wwwUrl.error.ToString());
 					yield break;
 				}
-				CDefine.DebugLogGreen("wwwUrl.progress---" + wwwUrl.progress);
+				DebugWide.LogGreen("wwwUrl.progress---" + wwwUrl.progress);
 				yield return null;
 			}
 			
 			if (wwwUrl.isDone)
 			{   
-				CDefine.DebugLogGreen("wwwUrl.isDone---size : "+wwwUrl.size);
-				CDefine.DebugLogGreen("wwwUrl.isDone---bytesLength : "+wwwUrl.bytes.Length);
+				DebugWide.LogGreen("wwwUrl.isDone---size : "+wwwUrl.size);
+				DebugWide.LogGreen("wwwUrl.isDone---bytesLength : "+wwwUrl.bytes.Length);
 				memStream = new MemoryStream(wwwUrl.bytes);
 			}
 		}
@@ -49,14 +49,14 @@ public class ResourceManager
 		{   
 			result(memStream);
 		}
-		CDefine.DebugLogGreen("WWW Loading complete");
+		DebugWide.LogGreen("WWW Loading complete");
 		yield return memStream;
 	}
 	
 	public IEnumerator UnityFileLoading()
 	{
-		string strFilePath = CDefine.ASSET_PATH + "townNode.xml";
-		CDefine.DebugLog ("-------------" + strFilePath + "-------------");
+		string strFilePath = GlobalConstants.ASSET_PATH + "townNode.xml";
+		DebugWide.Log ("-------------" + strFilePath + "-------------");
 		
 		MemoryStream memStream = null;
 		
@@ -68,24 +68,24 @@ public class ResourceManager
 			{   
 				if (wwwUrl.error != null)
 				{
-					CDefine.DebugLog("error : " + wwwUrl.error.ToString());
+					DebugWide.Log("error : " + wwwUrl.error.ToString());
 					yield break;
 				}
-				CDefine.DebugLog("wwwUrl.progress---" + wwwUrl.progress);
+				DebugWide.Log("wwwUrl.progress---" + wwwUrl.progress);
 				yield return null;
 			}
 			
 			if (wwwUrl.isDone)
 			{   
-				CDefine.DebugLog("wwwUrl.isDone---size : "+wwwUrl.size);
-				CDefine.DebugLog("wwwUrl.isDone---bytesLength : "+wwwUrl.bytes.Length);
+				DebugWide.Log("wwwUrl.isDone---size : "+wwwUrl.size);
+				DebugWide.Log("wwwUrl.isDone---bytesLength : "+wwwUrl.bytes.Length);
 				memStream = new MemoryStream(wwwUrl.bytes);
 			}
 		}
 		
 		_nodeInfo.LoadXMLFromMemory (memStream); //chamto test
 		
-		CDefine.DebugLog("AsyncLoading complete");
+		DebugWide.Log("AsyncLoading complete");
 		yield return memStream;
 	}
 	

@@ -83,13 +83,13 @@ namespace Table
 		{
 			//내부 코루틴 부분
 			//------------------------------------------------------------------------
-			CDefine.DebugLog(CDefine.ASSET_PATH + m_strFileName); //chamto test
+			DebugWide.Log(GlobalConstants.ASSET_PATH + m_strFileName); //chamto test
 			MemoryStream stream = null;
-			yield return ResourceManager.AsyncFileLoading(CDefine.ASSET_PATH + m_strFileName, value => stream = value);
+			yield return ResourceManager.AsyncFileLoading(GlobalConstants.ASSET_PATH + m_strFileName, value => stream = value);
 			
 			if (null == stream)
 			{
-				CDefine.DebugLog("error : failed LoadFromFile : " + CDefine.ASSET_PATH + m_strFileName);
+				DebugWide.Log("error : failed LoadFromFile : " + GlobalConstants.ASSET_PATH + m_strFileName);
 				yield break;
 			}
 			this.LoadXMLFromMemory (stream);

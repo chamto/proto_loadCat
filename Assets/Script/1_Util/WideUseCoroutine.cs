@@ -137,7 +137,7 @@ public class WideUseCoroutine
                             callBack(job.etorCurrentDepth.Current);
                         }
 
-                        CDefine.DebugLog("현재 코루틴 완료" + "   " + strName);
+                        DebugWide.Log("현재 코루틴 완료" + "   " + strName);
                         break;
                     }
                     else
@@ -152,7 +152,7 @@ public class WideUseCoroutine
                 {   //******* 현재 코루틴 진행중 *******
                     processCount++;
 
-                    //CDefine.DebugLog("현재 코루틴 진행중" + "   " + strName);
+                    //DebugWide.Log("현재 코루틴 진행중" + "   " + strName);
                     if (null != job.etorCurrentDepth.Current && job.etorCurrentDepth.Current is IEnumerator)
                     {
                         job.stackPrev.Push(job.etorCurrentDepth);
@@ -186,7 +186,7 @@ public class WideUseCoroutine
             if (false == etor.etorCurrentDepth.MoveNext())
             {   //******* 현재 코루틴 완료 *******
 
-                //CDefine.DebugLog("false == etor.etorCurrentDepth.MoveNext");
+                //DebugWide.Log("false == etor.etorCurrentDepth.MoveNext");
 
                 if (etor.etorCurrentDepth == etor.etorRoot)
                 {   //최상위 부모 코루틴이 완료되었다면, 완료된 코루틴이기 때문에 제거한다.
@@ -205,12 +205,12 @@ public class WideUseCoroutine
             else
             {   //******* 현재 코루틴 진행중 *******
 
-                //CDefine.DebugLog("true == etor.etorCurrentDepth.MoveNext : " + etor.etorCurrentDepth.Current + "  type :" + etor.etorCurrentDepth.Current.GetType() + "  :  "+typeof(IEnumerator));
+                //DebugWide.Log("true == etor.etorCurrentDepth.MoveNext : " + etor.etorCurrentDepth.Current + "  type :" + etor.etorCurrentDepth.Current.GetType() + "  :  "+typeof(IEnumerator));
 
                 //IEnumerator 자식코루틴이 있는지 검사
                 if (null != etor.etorCurrentDepth.Current && etor.etorCurrentDepth.Current is IEnumerator)
                 {
-                    //CDefine.DebugLog("자식 코루틴 있음 : " + etor.etorCurrentDepth.Current);
+                    //DebugWide.Log("자식 코루틴 있음 : " + etor.etorCurrentDepth.Current);
 
                     //자식 코루틴이 있다면, 현재코루틴을 스택에 넣고, 자식코루틴을 현재코루틴으로 한다.
                     etor.stackPrev.Push(etor.etorCurrentDepth);

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class CatMove_MonoBehaviour : MonoBehaviour 
 {
 	private MonoPathFinder _pathFinder = null;
-	private Stack<Vector3> _pathPos = null;
+	private Stack<Vector3> _pathPos = new Stack<Vector3>();
 	private Vector3 _destPos = Vector3.zero;
 	private Rigidbody2D _rb2d = null;
 
@@ -18,7 +18,8 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		_rb2d = this.GetComponent<Rigidbody2D> ();
 	}
 
-	public void MoveNext()
+
+	public void State_MoveNext()
 	{
 		Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("SuperCat"), LayerMask.NameToLayer ("Building"), true);
 		this.gameObject.layer = LayerMask.NameToLayer ("SuperCat");
@@ -38,10 +39,8 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 //		}
 
 	}
-
-
-
-	public void UpdateMoveToPos()
+	
+	public void State_UpdateMoveToPos()
 	{
 		_dir = _destPos - transform.position;
 
@@ -72,7 +71,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 
 	}
 
-	public bool ArriveOn()
+	public bool State_ArriveOn()
 	{
 		if(float.Epsilon <= _dir.sqrMagnitude && _dir.sqrMagnitude <= 0.15f)
 		{
@@ -125,6 +124,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		}
 	}
 
+
 	bool _isContactBuilding = false;
 	int _STATE = 0; //chamto temp
 	Vector3 _dir = Vector3.zero;
@@ -133,13 +133,20 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	void Update ()
 	{
 
-		if (true == Input_Unity.IsTouch ()) 
+		if (true == Input_Unity.IsTouch ())
 		{
-			_pathPos = _pathFinder.Search(transform.position, Input_Unity.GetTouchWorldPos ());
 
-			_STATE = 1;
-			this.MoveNext();
+			Vector3 touchPos = Input_Unity.GetTouchWorldPos ();
 
+			//DebugWide.LogRed(GlobalConstants.Hierarchy.gameViewArea); //chamto test
+			if( true == GlobalConstants.Hierarchy.gameViewArea.Contains(touchPos))
+			{
+				//_pathPos = _pathFinder.Search(transform.position, Input_Unity.GetTouchWorldPos ());
+				_pathFinder.SearchNonAlloc(transform.position, touchPos, ref _pathPos);
+				
+				_STATE = 1;
+				this.State_MoveNext();
+			}
 		}
 
 		switch (_STATE) 
@@ -170,12 +177,12 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 			sumTime += Time.deltaTime;
 			//if(sumTime > 0.2f)
 			{
-				this.UpdateMoveToPos();
+				this.State_UpdateMoveToPos();
 				sumTime = 0;
 			}
 
 
-			if(true ==this.ArriveOn())
+			if(true ==this.State_ArriveOn())
 			{
 				_STATE = 2;
 			}
@@ -196,7 +203,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 				{
 					_STATE = 1;
 					//_isContactBuilding = false;
-					MoveNext();
+					State_MoveNext();
 				}
 			}
 
@@ -280,15 +287,15 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		else
 			this.gameObject.layer = LayerMask.NameToLayer ("Default");
 
-		CDefine.DebugLog ("began");
+		DebugWide.Log ("began");
 	}
 	void TouchMoved() 
 	{
-		CDefine.DebugLog ("moved");
+		DebugWide.Log ("moved");
 	}
 	void TouchEnded() 
 	{
-		CDefine.DebugLog ("ended");
+		DebugWide.Log ("ended");
 	}
 
 }

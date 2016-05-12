@@ -62,12 +62,12 @@ public class MonoInputManager : MonoBehaviour
 //			if(hit2d.collider.CompareTag("drop"))
 //			{
 //				//drop move code
-//				CDefine.DebugLog("2d TouchPhase Move Drop!!");
+//				DebugWide.Log("2d TouchPhase Move Drop!!");
 //			}
 //			if(hit3d.collider.CompareTag("drop"))
 //			{
 //				//drop move code
-//				CDefine.DebugLog("3d TouchPhase Move Drop!!");
+//				DebugWide.Log("3d TouchPhase Move Drop!!");
 //			}
 //		}
 //		else if(Input.GetTouch(0).phase == TouchPhase.Ended)
@@ -110,7 +110,7 @@ public class MonoInputManager : MonoBehaviour
 //		//if(false)
 //		////if(Input.mousePresent)
 ////		{
-////			CDefine.DebugLog("Update Mouse Input!! -----"); //chamto test
+////			DebugWide.Log("Update Mouse Input!! -----"); //chamto test
 ////
 ////			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 ////
@@ -120,7 +120,7 @@ public class MonoInputManager : MonoBehaviour
 ////		}
 //		if(Input.touchCount > 0 )
 //		{
-//			CDefine.DebugLog("Update Touch Input!! -----"); //chamto test
+//			DebugWide.Log("Update Touch Input!! -----"); //chamto test
 //
 //			Vector2 pos = Input.GetTouch(0).position; 
 //			Vector3 theTouch = new Vector3(pos.x , pos.y , 0.0f);
@@ -163,20 +163,20 @@ public class MonoInputManager : MonoBehaviour
 	void Push_TouchEvent()
 	{
 
-		//CDefine.DebugLog(Input.touchCount);
+		//DebugWide.Log(Input.touchCount);
 		
 		if(Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
 		{
 			if(Input.touchCount > 0) {
 				if(Input.GetTouch(0).phase == TouchPhase.Began)
 				{
-					//CDefine.DebugLogError("Update : TouchPhase.Began"); //chamto test
+					//DebugWide.LogError("Update : TouchPhase.Began"); //chamto test
 					Init_PrevTouchMovedPos();
 					m_TouchedObject = SendMessage_TouchObject("TouchBegan",Input.GetTouch(0).position);
 				}
 				else if(Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetTouch(0).phase == TouchPhase.Stationary)
 				{
-					//CDefine.DebugLogError("Update : TouchPhase.Moved"); //chamto test
+					//DebugWide.LogError("Update : TouchPhase.Moved"); //chamto test
 
 					if(null != m_TouchedObject)
 						m_TouchedObject.SendMessage("TouchMoved",0,SendMessageOptions.DontRequireReceiver);
@@ -186,7 +186,7 @@ public class MonoInputManager : MonoBehaviour
 				}
 				else if(Input.GetTouch(0).phase == TouchPhase.Ended)
 				{
-					//CDefine.DebugLogError("Update : TouchPhase.Ended"); //chamto test
+					//DebugWide.LogError("Update : TouchPhase.Ended"); //chamto test
 					//checkInput("TouchEnded",Input.GetTouch(0).position);
 					if(null != m_TouchedObject)
 						m_TouchedObject.SendMessage("TouchEnded",0,SendMessageOptions.DontRequireReceiver);
@@ -194,7 +194,7 @@ public class MonoInputManager : MonoBehaviour
 				}
 				else
 				{
-					CDefine.DebugLogError("Update : Exception Input Event : " + Input.GetTouch(0).phase);
+					DebugWide.LogError("Update : Exception Input Event : " + Input.GetTouch(0).phase);
 				}
 			}
 		}else if(Application.platform == RuntimePlatform.OSXEditor)
@@ -220,7 +220,7 @@ public class MonoInputManager : MonoBehaviour
 					
 				}
 
-				//CDefine.DebugLog("--------------"); //chamto test
+				//DebugWide.Log("--------------"); //chamto test
 				
 			}
 
@@ -292,7 +292,7 @@ public class MonoInputManager : MonoBehaviour
 		RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
 		
 		if(hit){
-			//CDefine.DebugLog(hit.transform.gameObject.name); //chamto test
+			//DebugWide.Log(hit.transform.gameObject.name); //chamto test
 			hit.transform.gameObject.SendMessage(callbackMethod,0,SendMessageOptions.DontRequireReceiver);
 
 //			if(hit.tag.Equals("collider"))
