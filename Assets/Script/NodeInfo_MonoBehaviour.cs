@@ -51,6 +51,8 @@ public class NodeInfo_MonoBehaviour : MonoBehaviour
 				_lineList.Add(nodeNum, line);
 
 				line.transform.parent = this.transform;
+				line.material = new Material(Shader.Find("Sprites/Default"));
+				line.SetColors (new Color(1,1,1,0.5f), new Color(0,0,0,0.5f));
 				line.SetWidth (0.05f, 0.1f);
 				line.useWorldSpace = false;
 			}

@@ -35,7 +35,7 @@ public class MonoPathFinder : MonoBehaviour
 		Table.File_NodeInfo table = Single.resource._nodeInfo;
 		foreach (Table.NodeInfo nodeFrom in table._data) 
 		{
-			_graph.AddNode (new NavGraphNode (nodeFrom.nodeNum, nodeFrom.nodePos));
+			_graph.AddNode (new NavGraphNode (nodeFrom.nodeNum, _town.position + nodeFrom.nodePos));
 		}
 
 		foreach (Table.NodeInfo nodeFrom in table._data) 
@@ -62,7 +62,7 @@ public class MonoPathFinder : MonoBehaviour
 			NodeInfo_MonoBehaviour[] monoList =  _town.GetComponentsInChildren <NodeInfo_MonoBehaviour>(false);
 			foreach (NodeInfo_MonoBehaviour mono in monoList) 
 			{
-				saveList.Add(new Table.NodeInfo(mono._nodeNumber, mono.transform.position, mono._adjacencyEdgeList));
+				saveList.Add(new Table.NodeInfo(mono._nodeNumber, mono.transform.localPosition, mono._adjacencyEdgeList));
 			}
 			table._data = saveList;
 			table.SaveXML ("Assets/StreamingAssets/"+"townNode.xml", table._data);
@@ -222,7 +222,8 @@ public class MonoPathFinder : MonoBehaviour
 	{
 		GameObject obj = this.CreatePrefab ("node (-1)");
 		obj.transform.parent = _town;
-		obj.transform.position = info.nodePos;
+		//obj.transform.position = info.nodePos;
+		obj.transform.localPosition = info.nodePos;
 
 		NodeInfo_MonoBehaviour mono = obj.GetComponent<NodeInfo_MonoBehaviour> ();
 		mono._nodeNumber = info.nodeNum;

@@ -9,6 +9,7 @@ public class MonoGameInit : MonoBehaviour
 	{
 		//Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("Default"), LayerMask.NameToLayer ("Ignore Physics"), true);
 		//Physics2D.IgnoreLayerCollision (LayerMask.NameToLayer ("SuperCat"), LayerMask.NameToLayer ("Ignore Physics"), true);
+		Physics2D.IgnoreLayerCollision (GlobalConstants.Layer.Num.superCat, GlobalConstants.Layer.Num.building, true);
 
 		GlobalConstants.InitStatic ();
 	}

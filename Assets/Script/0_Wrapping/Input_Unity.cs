@@ -8,6 +8,63 @@ using System.Collections;
 public class Input_Unity
 {
 
+
+	private static bool	f_isEditorDraging = false;
+	public static TouchPhase GetTouchEvent()
+	{
+
+		if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) {
+			if (Input.touchCount > 0) {
+				if (Input.GetTouch (0).phase == TouchPhase.Began) {
+					DebugWide.LogWhite ("Update : TouchPhase.Began"); //chamto test
+					return TouchPhase.Began;
+				} else if (Input.GetTouch (0).phase == TouchPhase.Moved || Input.GetTouch (0).phase == TouchPhase.Stationary) {
+					DebugWide.LogWhite ("Update : TouchPhase.Moved"); //chamto test
+					return TouchPhase.Moved;
+				} else if (Input.GetTouch (0).phase == TouchPhase.Ended) {
+					DebugWide.LogWhite ("Update : TouchPhase.Ended"); //chamto test
+					return TouchPhase.Ended;
+				} else {
+					DebugWide.LogWhite ("Update : Exception Input Event : " + Input.GetTouch (0).phase);
+					return Input.GetTouch (0).phase;
+				}
+			}
+		} else if (Application.platform == RuntimePlatform.OSXEditor) {
+			if (Input.GetMouseButtonDown (0)) {
+					
+				if (false == f_isEditorDraging) {
+
+					//DebugWide.LogWhite ("______________ MouseButtonDown ______________"); //chamto test
+
+					f_isEditorDraging = true;
+
+					return TouchPhase.Began;
+				}
+
+			}
+			
+			if (Input.GetMouseButtonUp (0)) {	//mouse Up
+				
+				//DebugWide.LogWhite ("______________ MouseButtonUp ______________"); //chamto test
+				f_isEditorDraging = false;
+
+				return TouchPhase.Ended;
+			}
+			
+			//else
+			if (Input_Unity.GetMouseButtonMove (0)) {	//mouse Move
+				
+				if (f_isEditorDraging) {	///mouse Down + Move (Drag)
+					
+					//DebugWide.LogWhite ("______________ MouseMoved ______________"); //chamto test
+					
+					return TouchPhase.Moved;
+				}//if
+			}//if
+		}
+		return TouchPhase.Canceled;
+	}
+
 	public static bool IsTouch()
 	{
 		//DebugWide.Log("IsTouchCount : " + Input.touchCount);

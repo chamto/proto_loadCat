@@ -27,6 +27,8 @@ namespace Cat
 	}
 }
 
+
+
 public class CatMove_MonoBehaviour : MonoBehaviour 
 {
 	//public Cat.eMove _moveMode = Cat.eMove.Normal;
@@ -46,7 +48,14 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		GameObject objMgr = GameObject.Find("0_manager");
 		_pathFinder = objMgr.GetComponent<MonoPathFinder> ();
 		_rb2d = this.GetComponent<Rigidbody2D> ();
+		//_prevPosition = this.transform.position;
+
+//		Utility.Line.AddDebugLine (this.transform, this.name, Vector3.zero, Vector3.zero); //chamto test
+//		Utility.Line.AddDebugLine (this.transform, this.name+"01", Vector3.zero, Vector3.zero); //chamto test
+//		Utility.Line.AddDebugLine (this.transform, this.name+"02", Vector3.zero, Vector3.zero); //chamto test
+//		Utility.Line.AddDebugLine (this.transform, this.name+"_path", Vector3.zero, Vector3.zero);
 	}
+
 
 
 	public void State_MoveNext()
@@ -75,8 +84,15 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	{
 		_dir = _destPos - transform.position;
 
-
-		
+		//--------------------------------
+		//chamto test code 
+//		if (transform.position.y < _destPos.y)
+//		if(_prevVelocity.y > _rb2d.velocity.y) 
+//		{	
+//			this.gameObject.layer = GlobalConstants.Layer.Num.default0;
+//			_STATE = 3;
+//		} 
+//		_prevVelocity = _rb2d.velocity;
 		//--------------------------------
 
 		//_rb2d.AddForce (_dir, ForceMode2D.Force); // == force
@@ -95,7 +111,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		}
 		if (Cat.eMove.JumpFly == _moveMode) 
 		{
-			if(_rb2d.velocity.sqrMagnitude <= 10.8f)
+			if(_rb2d.velocity.sqrMagnitude <= 20.8f)
 				_rb2d.AddForce (_dir, ForceMode2D.Impulse); // ++ force
 			else
 				_rb2d.AddForce (_dir , ForceMode2D.Force); // == force
@@ -121,7 +137,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 
 	public bool State_ArriveOn()
 	{
-		if(float.Epsilon <= _dir.sqrMagnitude && _dir.sqrMagnitude <= 0.15f)
+		if(float.Epsilon <= _dir.sqrMagnitude && _dir.sqrMagnitude <= 0.25f)
 		{
 			this.gameObject.layer = GlobalConstants.Layer.Num.default0;
 
@@ -156,7 +172,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		if (coll.gameObject.tag == "Cat") 
 		{
 
-			//Debug.Log("OnCollisionEnter2D : Cat");
+
 		}
 		
 		if (coll.gameObject.tag == "Building") 
@@ -176,6 +192,134 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 			
 			
 		}
+
+
+	}
+	void OnCollisionStay2D(Collision2D coll) 
+	{
+		if (coll.gameObject.tag == "Building") 
+		{
+//			DebugWide.LogRed ("OnCollisionStay2D : Cat");
+//			if(0 != _pathPos.Count)
+//			{
+//				//_rb2d.AddForce(_dir * -1f,ForceMode2D.Impulse);
+//				//_rb2d.AddForceAtPosition(_dir, _destPos, ForceMode2D.Impulse);
+//				
+//			}
+		}
+	}
+
+	void OnTriggerEnter2D(Collider2D other) 
+	{
+
+		if (other.tag == "Building") 
+		{
+			//DebugWide.LogWhite("triggerEnter " + _dir.y);
+			if(_dir.y < 0 )
+			{
+				//_rb2d.MovePosition (this.transform.position + _dir.normalized*0.5f);
+			}
+			//DebugWide.LogWhite("triggerEnter " + _rb2d.velocity.y);
+			//this.gameObject.layer = GlobalConstants.Layer.Num.superCat;
+		}
+
+	}
+	void OnTriggerExit2D(Collider2D other) 
+	{
+		if (other.tag == "Building") 
+		{
+			//DebugWide.LogRed("triggerExit " + _rb2d.velocity.y);
+			//this.gameObject.layer = GlobalConstants.Layer.Num.default0;
+		}
+	}
+	void OnTriggerStay2D(Collider2D other) 
+	{
+		if (other.tag == "Building") 
+		{
+			//DebugWide.LogBlue("triggerStay " + _rb2d.velocity.y);
+			//this.gameObject.layer = GlobalConstants.Layer.Num.superCat;
+			//_rb2d.MovePosition (this.transform.position + _dir*0.3f);
+		}
+
+
+		//other.attachedRigidbody.AddForce(-0.1 * other.attachedRigidbody.velocity);
+	}
+
+	//private Vector3 _prevPosition;
+	private Vector3 _sourcePos = Vector3.zero;
+	private bool _bArrival = false;
+	private float _changeAmountY = 0f;
+	void Update()
+	{
+		//destPos
+		Utility.Line.UpdateDebugLine(transform, this.name+"_destPos", transform.position, _destPos); //chamto test
+		Utility.Line.UpdateDebugLineScale(this.name+"_destPos", transform.localScale);
+
+		//velocity
+		Utility.Line.UpdateDebugLine(transform, this.name+"_rigidVelocity", transform.position, transform.position + (Vector3)_rb2d.velocity ,Color.red); //chamto test
+		Utility.Line.UpdateDebugLineScale(this.name+"_rigidVelocity", transform.localScale);
+
+		//1.충돌 가능상태에서만 처리
+		if (this.gameObject.layer == GlobalConstants.Layer.Num.superCat) 
+		{
+			//2.초기 ↗︎방향으로 설정되었을 때
+			if (_sourcePos.y < _destPos.y) 
+			{
+				//3.↘︎ 아래방향으로 떨어지는 시점
+				if(_rb2d.velocity.y < 0 )
+				{
+					//4.음수변화량이 기준치 이상으로 쌓였을 때
+					if(_changeAmountY < -1.5f)
+					{
+						DebugWide.LogBlue("falling!  changeAmount y : " + _changeAmountY); //chamto test
+						this.gameObject.layer = GlobalConstants.Layer.Num.default0;
+						
+					}else{
+						DebugWide.LogWhite("changeAmount y : " + _changeAmountY); //chamto test
+					}
+				}
+			}
+		}
+		_changeAmountY += _rb2d.velocity.y;
+
+
+		//일정 거리 이동후 default 상태로 전환시키기 
+		if (true == _bArrival && (transform.position - _sourcePos).sqrMagnitude >= 0.2f) 
+		{
+			Utility.Line.UpdateDebugLine(transform, this.name+"_arrivalDistance", _sourcePos, transform.position ,Color.black); //chamto test
+			Utility.Line.UpdateDebugLineScale(this.name+"_arrivalDistance", transform.localScale);
+
+			_bArrival = false;
+			this.gameObject.layer = GlobalConstants.Layer.Num.default0;
+		}
+
+		//if(true == Input_Unity.IsTouch())
+		if(TouchPhase.Began == Input_Unity.GetTouchEvent())
+		{
+
+			this.gameObject.layer = GlobalConstants.Layer.Num.superCat;
+
+			_destPos = Input_Unity.GetTouchWorldPos ();
+			_destPos.z = 0;
+			_dir = _destPos - transform.position;
+
+			_sourcePos = transform.position;
+			_bArrival = true;
+			_changeAmountY = 0f;
+			_rb2d.velocity = Vector2.zero;
+
+			//Debug.Log("Force : " + rb2d.velocity.sqrMagnitude); //chamto test
+			//if(_rb2d.velocity.sqrMagnitude >= 100.0f)
+			//	_rb2d.AddForce (_dir, ForceMode2D.Force);
+			//else
+				_rb2d.AddForce (_dir * 2, ForceMode2D.Impulse);
+		}
+		if (TouchPhase.Ended == Input_Unity.GetTouchEvent ()) 
+		{
+			//_rb2d.velocity = Vector2.zero; //cat stop
+		}
+		
+		this.AniDirection (_destPos - transform.position);
 	}
 
 
@@ -185,8 +329,11 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	string temp = "";
 	float sumTime1 = 0;
 	float sumTime2 = 0;
-	void Update ()
+	//void Update ()
+	void FixedUpdate2222 ()
 	{
+		Utility.Line.UpdateDebugLine(transform, this.name+"_destPos", transform.position, _destPos); //chamto test
+		Utility.Line.UpdateDebugLineScale(this.name+"_destPos", transform.localScale);
 
 		if (true == Input_Unity.IsTouch ())
 		{
@@ -204,6 +351,9 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 				{
 					//_pathPos = _pathFinder.Search(transform.position, Input_Unity.GetTouchWorldPos ());
 					_pathFinder.SearchNonAlloc(transform.position, touchPos, ref _pathPos);
+
+					//chamto test
+					Utility.Line.UpdateDebugLine(transform, this.name+"_path", _pathPos.ToArray(),Color.green, Color.black);
 				}
 
 
@@ -250,7 +400,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 			break;
 		case 1: //move to pos
 		{
-
+			DebugWide.LogRed("moveToPos  state-1 : "); //chamto test
 			this.State_UpdateMoveToPos();
 
 			if(true ==this.State_ArriveOn())
@@ -280,29 +430,21 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 
 		}
 			break;
+		case 3: //falling
+		{
+			DebugWide.LogRed("falling  state-3 : " + _isContactBuilding); //chamto test
+			if(true == _isContactBuilding)
+			{
+				_STATE = 1;
+				//_isContactBuilding = false;
+				this.gameObject.layer = GlobalConstants.Layer.Num.superCat;
+			}
+			
 		}
-
-//		if(true == Input_Unity.IsTouch())
-//		{
-//
-//			_destPos = Input_Unity.GetTouchWorldPos ();
-//			_destPos.z = 0;
-//			_dir = _destPos - transform.position;
-//
-//
-//			//Debug.Log("Force : " + rb2d.velocity.sqrMagnitude); //chamto test
-//			if(_rb2d.velocity.sqrMagnitude >= 100.0f)
-//				_rb2d.AddForce (_dir, ForceMode2D.Force);
-//			else
-//				_rb2d.AddForce (_dir, ForceMode2D.Impulse);
-//			
-//			//rb2d.MovePosition(destPos);
-//			//rb2d.AddForceAtPosition(_dir, destPos, ForceMode2D.Impulse);
-//		}
-
+			break;
+		}//end switch
+	
 		this.AniDirection (_destPos - transform.position);
-		//this.transform.position += dir * Time.deltaTime; 
-
 
 	}
 
