@@ -39,7 +39,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	private MonoPathFinder _pathFinder = null;
 	private Stack<Vector3> _pathPos = new Stack<Vector3>();
 	private Vector3 _destPos = Vector3.zero;
-	private Rigidbody2D _rb2d = null;
+	public Rigidbody2D _rb2d = null;
 
 
 	// Use this for initialization
@@ -66,6 +66,8 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		_destPos = _pathPos.Pop ();
 		_destPos.z = 0;
 
+		this.s_ControlLayer_Falling.Init (transform);
+
 		//_rb2d.velocity = Vector2.zero; //cat stop
 //		if (null != _pathPos) 
 //		{
@@ -79,20 +81,72 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 //		}
 
 	}
-	
+
+	struct S_ControlLayer_Falling
+	{
+		public Vector3 sourcePos;
+		public bool bArrival;
+		public float changeAmountY;
+		
+		public void Init(Transform transform)
+		{
+			sourcePos = transform.position;
+			bArrival = true;
+			changeAmountY = 0f;
+		}
+	} S_ControlLayer_Falling s_ControlLayer_Falling; 
+	public void ControlLayer_Falling()
+	{
+		//destPos
+		Utility.Line.UpdateDebugLine(transform, this.name+"_destPos", transform.position, _destPos); //chamto test
+		Utility.Line.UpdateDebugLineScale(this.name+"_destPos", transform.localScale);
+		
+		//velocity
+		Utility.Line.UpdateDebugLine(transform, this.name+"_rigidVelocity", transform.position, transform.position + (Vector3)_rb2d.velocity ,Color.red); //chamto test
+		Utility.Line.UpdateDebugLineScale(this.name+"_rigidVelocity", transform.localScale);
+		
+		//1.충돌 가능상태에서만 처리
+		if (this.gameObject.layer == GlobalConstants.Layer.Num.superCat) 
+		{
+			//2.초기 ↗︎방향으로 설정되었을 때
+			if (s_ControlLayer_Falling.sourcePos.y < _destPos.y) 
+			{
+				//3.↘︎ 아래방향으로 떨어지는 시점
+				if(_rb2d.velocity.y < 0 )
+				{
+					//4.음수변화량이 기준치 이상으로 쌓였을 때
+					if(s_ControlLayer_Falling.changeAmountY < -1.5f)
+					{
+						DebugWide.LogBlue("falling!  changeAmount y : " + s_ControlLayer_Falling.changeAmountY); //chamto test
+						this.gameObject.layer = GlobalConstants.Layer.Num.default0;
+						
+					}else{
+						DebugWide.LogWhite("changeAmount y : " + s_ControlLayer_Falling.changeAmountY); //chamto test
+					}
+				}
+			}
+		}
+		s_ControlLayer_Falling.changeAmountY += _rb2d.velocity.y;
+
+
+		//일정 거리 이동후 default 상태로 전환시키기 
+		if (true == s_ControlLayer_Falling.bArrival && (transform.position - s_ControlLayer_Falling.sourcePos).sqrMagnitude >= 0.2f) 
+		{
+			Utility.Line.UpdateDebugLine(transform, this.name+"_arrivalDistance", s_ControlLayer_Falling.sourcePos, transform.position ,Color.black); //chamto test
+			Utility.Line.UpdateDebugLineScale(this.name+"_arrivalDistance", transform.localScale);
+			
+			s_ControlLayer_Falling.bArrival = false;
+			this.gameObject.layer = GlobalConstants.Layer.Num.default0;
+		}
+	}
+
+	float S_State_UpdateMoveToPos_sumTime = 0;
 	public void State_UpdateMoveToPos()
 	{
 		_dir = _destPos - transform.position;
 
 		//--------------------------------
-		//chamto test code 
-//		if (transform.position.y < _destPos.y)
-//		if(_prevVelocity.y > _rb2d.velocity.y) 
-//		{	
-//			this.gameObject.layer = GlobalConstants.Layer.Num.default0;
-//			_STATE = 3;
-//		} 
-//		_prevVelocity = _rb2d.velocity;
+
 		//--------------------------------
 
 		//_rb2d.AddForce (_dir, ForceMode2D.Force); // == force
@@ -111,6 +165,17 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		}
 		if (Cat.eMove.JumpFly == _moveMode) 
 		{
+			this.ControlLayer_Falling ();
+
+			S_State_UpdateMoveToPos_sumTime += Time.deltaTime;
+			if(S_State_UpdateMoveToPos_sumTime > 0.3f)
+			{
+				this.gameObject.layer = GlobalConstants.Layer.Num.superCat;
+				this.s_ControlLayer_Falling.Init (transform);
+				S_State_UpdateMoveToPos_sumTime = 0;
+			}
+
+			//_rb2d.AddForce (_dir * 2, ForceMode2D.Impulse);
 			if(_rb2d.velocity.sqrMagnitude <= 20.8f)
 				_rb2d.AddForce (_dir, ForceMode2D.Impulse); // ++ force
 			else
@@ -209,11 +274,32 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		}
 	}
 
+
+//	IEnumerator CoroutineLanding()
+//	{
+//		Vector3 start = transform.localScale;
+//		start.x /= start.x;
+//		start.y /= start.y;
+//		transform.localScale = start * 0.5f;
+//
+//
+//
+//		for(int i=0;i<5;i++)
+//		{
+//			transform.localScale += transform.localScale * Time.deltaTime;
+//			yield return 0 ;
+//		}
+//
+//		transform.localScale = start;
+//	}
+
 	void OnTriggerEnter2D(Collider2D other) 
 	{
 
 		if (other.tag == "Building") 
 		{
+			//StartCoroutine(CoroutineLanding());
+
 			//DebugWide.LogWhite("triggerEnter " + _dir.y);
 			if(_dir.y < 0 )
 			{
@@ -224,6 +310,22 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		}
 
 	}
+	void OnTriggerStay2D(Collider2D other) 
+	{
+		if (other.tag == "Building") 
+		{
+
+
+			//DebugWide.LogBlue("triggerStay " + _rb2d.velocity.y);
+			//this.gameObject.layer = GlobalConstants.Layer.Num.superCat;
+			//_rb2d.MovePosition (this.transform.position + _dir*0.3f);
+		}
+		
+		
+		//other.attachedRigidbody.AddForce(-0.1 * other.attachedRigidbody.velocity);
+	}
+
+
 	void OnTriggerExit2D(Collider2D other) 
 	{
 		if (other.tag == "Building") 
@@ -232,66 +334,17 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 			//this.gameObject.layer = GlobalConstants.Layer.Num.default0;
 		}
 	}
-	void OnTriggerStay2D(Collider2D other) 
+
+
+
+
+
+//	private Vector3 ControlLayer_sourcePos = Vector3.zero;
+//	private bool ControlLayer_bArrival = false;
+//	private float ControlLater_changeAmountY = 0f;
+	void Update111()
 	{
-		if (other.tag == "Building") 
-		{
-			//DebugWide.LogBlue("triggerStay " + _rb2d.velocity.y);
-			//this.gameObject.layer = GlobalConstants.Layer.Num.superCat;
-			//_rb2d.MovePosition (this.transform.position + _dir*0.3f);
-		}
-
-
-		//other.attachedRigidbody.AddForce(-0.1 * other.attachedRigidbody.velocity);
-	}
-
-	//private Vector3 _prevPosition;
-	private Vector3 _sourcePos = Vector3.zero;
-	private bool _bArrival = false;
-	private float _changeAmountY = 0f;
-	void Update()
-	{
-		//destPos
-		Utility.Line.UpdateDebugLine(transform, this.name+"_destPos", transform.position, _destPos); //chamto test
-		Utility.Line.UpdateDebugLineScale(this.name+"_destPos", transform.localScale);
-
-		//velocity
-		Utility.Line.UpdateDebugLine(transform, this.name+"_rigidVelocity", transform.position, transform.position + (Vector3)_rb2d.velocity ,Color.red); //chamto test
-		Utility.Line.UpdateDebugLineScale(this.name+"_rigidVelocity", transform.localScale);
-
-		//1.충돌 가능상태에서만 처리
-		if (this.gameObject.layer == GlobalConstants.Layer.Num.superCat) 
-		{
-			//2.초기 ↗︎방향으로 설정되었을 때
-			if (_sourcePos.y < _destPos.y) 
-			{
-				//3.↘︎ 아래방향으로 떨어지는 시점
-				if(_rb2d.velocity.y < 0 )
-				{
-					//4.음수변화량이 기준치 이상으로 쌓였을 때
-					if(_changeAmountY < -1.5f)
-					{
-						DebugWide.LogBlue("falling!  changeAmount y : " + _changeAmountY); //chamto test
-						this.gameObject.layer = GlobalConstants.Layer.Num.default0;
-						
-					}else{
-						DebugWide.LogWhite("changeAmount y : " + _changeAmountY); //chamto test
-					}
-				}
-			}
-		}
-		_changeAmountY += _rb2d.velocity.y;
-
-
-		//일정 거리 이동후 default 상태로 전환시키기 
-		if (true == _bArrival && (transform.position - _sourcePos).sqrMagnitude >= 0.2f) 
-		{
-			Utility.Line.UpdateDebugLine(transform, this.name+"_arrivalDistance", _sourcePos, transform.position ,Color.black); //chamto test
-			Utility.Line.UpdateDebugLineScale(this.name+"_arrivalDistance", transform.localScale);
-
-			_bArrival = false;
-			this.gameObject.layer = GlobalConstants.Layer.Num.default0;
-		}
+		this.ControlLayer_Falling ();
 
 		//if(true == Input_Unity.IsTouch())
 		if(TouchPhase.Began == Input_Unity.GetTouchEvent())
@@ -303,9 +356,10 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 			_destPos.z = 0;
 			_dir = _destPos - transform.position;
 
-			_sourcePos = transform.position;
-			_bArrival = true;
-			_changeAmountY = 0f;
+//			ControlLayer_sourcePos = transform.position;
+//			ControlLayer_bArrival = true;
+//			ControlLater_changeAmountY = 0f;
+			s_ControlLayer_Falling.Init(transform);
 			_rb2d.velocity = Vector2.zero;
 
 			//Debug.Log("Force : " + rb2d.velocity.sqrMagnitude); //chamto test
@@ -326,11 +380,10 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	bool _isContactBuilding = false;
 	int _STATE = 0; //chamto temp
 	Vector3 _dir = Vector3.zero;
-	string temp = "";
 	float sumTime1 = 0;
 	float sumTime2 = 0;
 	//void Update ()
-	void FixedUpdate2222 ()
+	void FixedUpdate ()
 	{
 		Utility.Line.UpdateDebugLine(transform, this.name+"_destPos", transform.position, _destPos); //chamto test
 		Utility.Line.UpdateDebugLineScale(this.name+"_destPos", transform.localScale);
@@ -360,6 +413,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 				
 				_STATE = 1;
 				this.State_MoveNext();
+
 			}
 		}
 
@@ -400,7 +454,7 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 			break;
 		case 1: //move to pos
 		{
-			DebugWide.LogRed("moveToPos  state-1 : "); //chamto test
+			//DebugWide.LogRed("moveToPos  state-1 : "); //chamto test
 			this.State_UpdateMoveToPos();
 
 			if(true ==this.State_ArriveOn())
