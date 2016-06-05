@@ -2816,7 +2816,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &984059963
 Transform:
   m_ObjectHideFlags: 0
@@ -3485,6 +3485,7 @@ GameObject:
   - 114: {fileID: 1391016166}
   - 114: {fileID: 1391016167}
   - 114: {fileID: 1391016168}
+  - 114: {fileID: 1391016169}
   m_Layer: 0
   m_Name: 0_manager
   m_TagString: Untagged
@@ -3552,6 +3553,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1a3d590f7b0f4d06bddd5c84731af46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1391016169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1391016163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24835a9f72c6e4cd193c1d6693369883, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outColor: {r: 0, g: 0, b: 0, a: 0}
+  _startColor: {r: 1, g: 1, b: 1, a: 1}
+  _middleColor: {r: .301038027, g: .301038027, b: .705882311, a: 1}
+  _endColor: {r: 0, g: 0, b: 0, a: 1}
+  _dayTime: 20
+  _nightTime: 20
 --- !u!1001 &1404938820
 Prefab:
   m_ObjectHideFlags: 0
