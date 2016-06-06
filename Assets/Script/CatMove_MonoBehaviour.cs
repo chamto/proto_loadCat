@@ -97,13 +97,16 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	} S_ControlLayer_Falling s_ControlLayer_Falling; 
 	public void ControlLayer_Falling()
 	{
+
+#if UNITY_EDITOR
 		//destPos
-		Utility.Line.UpdateDebugLine(transform, this.name+"_destPos", transform.position, _destPos); //chamto test
-		Utility.Line.UpdateDebugLineScale(this.name+"_destPos", transform.localScale);
-		
-		//velocity
-		Utility.Line.UpdateDebugLine(transform, this.name+"_rigidVelocity", transform.position, transform.position + (Vector3)_rb2d.velocity ,Color.red); //chamto test
-		Utility.Line.UpdateDebugLineScale(this.name+"_rigidVelocity", transform.localScale);
+//		Utility.Line.UpdateDebugLine(transform, this.name+"_destPos", transform.position, _destPos); //chamto test
+//		Utility.Line.UpdateDebugLineScale(this.name+"_destPos", transform.localScale);
+//		
+//		//velocity
+//		Utility.Line.UpdateDebugLine(transform, this.name+"_rigidVelocity", transform.position, transform.position + (Vector3)_rb2d.velocity ,Color.red); //chamto test
+//		Utility.Line.UpdateDebugLineScale(this.name+"_rigidVelocity", transform.localScale);
+#endif
 		
 		//1.충돌 가능상태에서만 처리
 		if (this.gameObject.layer == GlobalConstants.Layer.Num.superCat) 
@@ -117,11 +120,11 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 					//4.음수변화량이 기준치 이상으로 쌓였을 때
 					if(s_ControlLayer_Falling.changeAmountY < -1.5f)
 					{
-						DebugWide.LogBlue("falling!  changeAmount y : " + s_ControlLayer_Falling.changeAmountY); //chamto test
+						//DebugWide.LogBlue("falling!  changeAmount y : " + s_ControlLayer_Falling.changeAmountY); //chamto test
 						this.gameObject.layer = GlobalConstants.Layer.Num.default0;
 						
 					}else{
-						DebugWide.LogWhite("changeAmount y : " + s_ControlLayer_Falling.changeAmountY); //chamto test
+						//DebugWide.LogWhite("changeAmount y : " + s_ControlLayer_Falling.changeAmountY); //chamto test
 					}
 				}
 			}
@@ -132,9 +135,11 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 		//일정 거리 이동후 default 상태로 전환시키기 
 		if (true == s_ControlLayer_Falling.bArrival && (transform.position - s_ControlLayer_Falling.sourcePos).sqrMagnitude >= 0.2f) 
 		{
-			Utility.Line.UpdateDebugLine(transform, this.name+"_arrivalDistance", s_ControlLayer_Falling.sourcePos, transform.position ,Color.black); //chamto test
-			Utility.Line.UpdateDebugLineScale(this.name+"_arrivalDistance", transform.localScale);
-			
+#if UNITY_EDITOR
+			//Utility.Line.UpdateDebugLine(transform, this.name+"_arrivalDistance", s_ControlLayer_Falling.sourcePos, transform.position ,Color.black); //chamto test
+			//Utility.Line.UpdateDebugLineScale(this.name+"_arrivalDistance", transform.localScale);
+#endif
+
 			s_ControlLayer_Falling.bArrival = false;
 			this.gameObject.layer = GlobalConstants.Layer.Num.default0;
 		}
@@ -385,8 +390,8 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 	//void Update ()
 	void FixedUpdate ()
 	{
-		Utility.Line.UpdateDebugLine(transform, this.name+"_destPos", transform.position, _destPos); //chamto test
-		Utility.Line.UpdateDebugLineScale(this.name+"_destPos", transform.localScale);
+		//Utility.Line.UpdateDebugLine(transform, this.name+"_destPos", transform.position, _destPos); //chamto test
+		//Utility.Line.UpdateDebugLineScale(this.name+"_destPos", transform.localScale);
 
 		if (true == Input_Unity.IsTouch ())
 		{
@@ -405,8 +410,10 @@ public class CatMove_MonoBehaviour : MonoBehaviour
 					//_pathPos = _pathFinder.Search(transform.position, Input_Unity.GetTouchWorldPos ());
 					_pathFinder.SearchNonAlloc(transform.position, touchPos, ref _pathPos);
 
+#if UNITY_EDITOR
 					//chamto test
-					Utility.Line.UpdateDebugLine(transform, this.name+"_path", _pathPos.ToArray(),Color.green, Color.black);
+					//Utility.Line.UpdateDebugLine(transform, this.name+"_path", _pathPos.ToArray(),Color.green, Color.black);
+#endif
 				}
 
 
