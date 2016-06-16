@@ -25,7 +25,7 @@ public class CatEvent_MonoBehaviour : MonoBehaviour
 		if (_elapsedTime >= 1f)
 			_elapsedTime = 0;
 
-		//_heartBar.topBottomCutting.y = 40f * _elapsedTime;
-		//_heartBar._Update_perform = true;
+		_heartBar.topBottomCutting.y = 40f * _elapsedTime;
+		_heartBar._Update_perform = true;
 	}
 }
