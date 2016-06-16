@@ -33,5 +33,12 @@ public class Single
 		}
 	}
 
+	public static HierarchyPreLoader hierarchy
+	{
+		get
+		{
+			return CSingleton<HierarchyPreLoader>.Instance;
+		}
+	}
 
 }

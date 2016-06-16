@@ -8,28 +8,28 @@ public class CatAniInit_MonoBehaviour : HierarchyLoader_MonoBehaviour
 
 	public void AniInitHide()
 	{
-		this.setActiveInChildren (this.transform, false, false);
+		this.SetActiveInChildren (this.transform, false, true);
 
-		this.getGameObject ("~/eye").SetActive (true);
-		this.getGameObject ("~/eye/open").SetActive (true);
+		this.GetGameObject ("~/eye").SetActive (true);
+		this.GetGameObject ("~/eye/open").SetActive (true);
 
 	}
 
 	public void AniInitRush()
 	{
-		this.setActiveInChildren (this.transform, false, false);
+		this.SetActiveInChildren (this.transform, false, true);
 
-		this.getGameObject ("~/eye").SetActive (true);
-		this.getGameObject ("~/eye/open").SetActive (true);
-		this.getGameObject ("~/head").SetActive (true);
-		this.getGameObject ("~/body").SetActive (true);
+		this.GetGameObject ("~/eye").SetActive (true);
+		this.GetGameObject ("~/eye/open").SetActive (true);
+		this.GetGameObject ("~/head").SetActive (true);
+		this.GetGameObject ("~/body").SetActive (true);
 	}
 
 	public void AniInitEat()
 	{
-		this.setActiveInChildren (this.transform, false, false);
+		this.SetActiveInChildren (this.transform, false, true);
 
-		this.getGameObject ("~/eat").SetActive (true);
+		this.GetGameObject ("~/eat").SetActive (true);
 	}
 
 	public void AniDirection(Vector3 dir)
