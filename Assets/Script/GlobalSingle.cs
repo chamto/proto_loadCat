@@ -41,4 +41,12 @@ public class Single
 		}
 	}
 
+	public static DayAndNight_MonoBehaviour dayAndNight
+	{
+		get
+		{
+			return CSingletonMono<DayAndNight_MonoBehaviour>.Instance;
+		}
+	}
+
 }

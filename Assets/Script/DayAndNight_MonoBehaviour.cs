@@ -11,6 +11,10 @@ public class DayAndNight_MonoBehaviour : MonoBehaviour
 
 	public float _dayTime = 20;
 	public float _nightTime = 20;
+	//public float _dawnTime = 20;
+
+	public int _elapsedDay = 0;
+	public bool _isNextDay = false;
 
 
 	// Use this for initialization
@@ -25,16 +29,18 @@ public class DayAndNight_MonoBehaviour : MonoBehaviour
 	private Color _Update_tempColor;
 	void Update () 
 	{
-		_Update_elapsedTime += Time.deltaTime * _Update_timeOrientation;
+		_Update_elapsedTime += Time.deltaTime;
+		_isNextDay = false;
 
-		//day -> night
-		if (_Update_elapsedTime <= 0)
+		//setting day -> night
+		if (_Update_elapsedTime > _dayTime + _nightTime + _nightTime + _dayTime)
 		{
 			_Update_timeOrientation = 1;
 			_Update_elapsedTime = 0;
+			_elapsedDay++; //next day
+			_isNextDay = true;
 		}
-
-		//day <- night
+		//setting day <- night
 		if (_Update_elapsedTime > _dayTime + _nightTime) 
 		{
 			_Update_timeOrientation = -1;
@@ -42,8 +48,8 @@ public class DayAndNight_MonoBehaviour : MonoBehaviour
 
 		if (1 == _Update_timeOrientation) 
 		{
-			//day -> night
-			if (0 <= _Update_elapsedTime && _Update_elapsedTime <= _dayTime) 
+			//ani day -> night
+			if (_Update_elapsedTime <= _dayTime) 
 			{
 				_outColor = Color.Lerp (_startColor, _middleColor, _Update_elapsedTime / _dayTime);
 				_Update_tempColor = _outColor;
@@ -53,14 +59,15 @@ public class DayAndNight_MonoBehaviour : MonoBehaviour
 			}
 		} else 
 		{
-			//day <- night
-			if (0 <= _Update_elapsedTime && _Update_elapsedTime <= _dayTime) {
-				_outColor = Color.Lerp (_startColor, _Update_tempColor, _Update_elapsedTime / _dayTime);
-			} else 
-			{
-				_outColor = Color.Lerp (_middleColor, _endColor, (_Update_elapsedTime - _dayTime) / _nightTime);
+			//ani day <- night
+
+			if (_Update_elapsedTime <= _dayTime + _nightTime + _nightTime) {
+				_outColor = Color.Lerp (_endColor, _middleColor , (_Update_elapsedTime - (_dayTime + _nightTime)) / _nightTime);
 				_Update_tempColor = _outColor;
-			}
+			}else
+			{
+				_outColor = Color.Lerp (_Update_tempColor, _startColor, (_Update_elapsedTime - (_dayTime + _nightTime + _nightTime)) / _dayTime);
+			}  
 		}
 
 
