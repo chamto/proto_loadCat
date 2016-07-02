@@ -13,17 +13,16 @@ public class CatEvent_MonoBehaviour : MonoBehaviour
 		UInt32 _HKEY_HEART_BAR = Single.hierarchy.PathToKey (this.transform, "/hp/heart_bar");
 		Transform tfo = Single.hierarchy.GetData (_HKEY_HEART_BAR);
 		_heartBar = tfo.GetComponent<Sprite_Mono> ();
-
+		//
 
 		//Single.dayAndNight._elapsedDay
 	}
 	
 
 
-	float _elapsedTime = 0;
+	private float _elapsedTime = 0;
 	void Update () 
 	{
-
 
 		if (Single.dayAndNight._isNextDay) 
 		{
@@ -31,7 +30,8 @@ public class CatEvent_MonoBehaviour : MonoBehaviour
 			if (_elapsedTime >= 1f)
 				_elapsedTime = 0;
 			
-			_heartBar.topBottomCutting.y = 40f * _elapsedTime;
+			_heartBar.topBottomCutting.y = _heartBar._spriteSize.y * _elapsedTime;
+
 			_heartBar._Update_perform = true;
 		}
 	}

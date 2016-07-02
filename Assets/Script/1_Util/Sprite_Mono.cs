@@ -12,9 +12,9 @@ public class Sprite_Mono : MonoBehaviour
 		MiddleCenter
 	}
 
-	public Vector2 spriteTopLeft;
-	public Vector2 spriteSize;
-	public Material spriteMaterial;
+	public Vector2 _spriteTopLeft;
+	public Vector2 _spriteSize;
+	public Material _spriteMaterial;
 	public float defCameraPixels = 768f;
 	public SpriteOrientation spriteOrientation;
 	public Vector2 topBottomCutting;
@@ -26,7 +26,7 @@ public class Sprite_Mono : MonoBehaviour
 
 	void Awake()
 	{
-		if (spriteMaterial == null || spriteMaterial.mainTexture == null) 
+		if (_spriteMaterial == null || _spriteMaterial.mainTexture == null) 
 		{
 			Debug.LogError("null is material");
 			return;
@@ -45,7 +45,7 @@ public class Sprite_Mono : MonoBehaviour
 		}
 		_renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 		_renderer.receiveShadows = false;
-		_renderer.sharedMaterial = spriteMaterial;
+		_renderer.sharedMaterial = _spriteMaterial;
 
 		//chamto 20160611
 		//각각의 단위가 존재
@@ -81,19 +81,19 @@ public class Sprite_Mono : MonoBehaviour
 		if (spriteOrientation == SpriteOrientation.MiddleCenter) {
 			_mesh.vertices = new Vector3[]
 			{
-				new Vector3 (-spriteSize.x, -spriteSize.y) * _pixelPerWorldUnit * 0.5f, //left-down 0
-				new Vector3 (-spriteSize.x, spriteSize.y) * _pixelPerWorldUnit * 0.5f,  //left-up 1
-				new Vector3 (spriteSize.x, -spriteSize.y) * _pixelPerWorldUnit * 0.5f, //right-down 2
-				new Vector3 (spriteSize.x, spriteSize.y) * _pixelPerWorldUnit * 0.5f  //right-up 3
+				new Vector3 (-_spriteSize.x, -_spriteSize.y) * _pixelPerWorldUnit * 0.5f, //left-down 0
+				new Vector3 (-_spriteSize.x, _spriteSize.y) * _pixelPerWorldUnit * 0.5f,  //left-up 1
+				new Vector3 (_spriteSize.x, -_spriteSize.y) * _pixelPerWorldUnit * 0.5f, //right-down 2
+				new Vector3 (_spriteSize.x, _spriteSize.y) * _pixelPerWorldUnit * 0.5f  //right-up 3
 			};
 		} else if(spriteOrientation == SpriteOrientation.TopLeft)
 		{
 			_mesh.vertices = new Vector3[]
 			{
-				new Vector3(0,-spriteSize.y) * _pixelPerWorldUnit,
+				new Vector3(0,-_spriteSize.y) * _pixelPerWorldUnit,
 				new Vector3(0, -topBottomCutting.y) * _pixelPerWorldUnit,
-				new Vector3(spriteSize.x,-spriteSize.y ) * _pixelPerWorldUnit,
-				new Vector3(spriteSize.x, -topBottomCutting.y) * _pixelPerWorldUnit
+				new Vector3(_spriteSize.x,-_spriteSize.y ) * _pixelPerWorldUnit,
+				new Vector3(_spriteSize.x, -topBottomCutting.y) * _pixelPerWorldUnit
 			};
 		}
 		
@@ -111,17 +111,17 @@ public class Sprite_Mono : MonoBehaviour
 
 		_mesh.uv = new Vector2[] 
 		{
-			new Vector2(texelPerUvUnit.x * spriteTopLeft.x,
-			            1f- (texelPerUvUnit.y * (spriteTopLeft.y + spriteSize.y ))),	//left-up 1
+			new Vector2(texelPerUvUnit.x * _spriteTopLeft.x,
+			            1f- (texelPerUvUnit.y * (_spriteTopLeft.y + _spriteSize.y ))),	//left-up 1
 
-			new Vector2(texelPerUvUnit.x * spriteTopLeft.x,
-			            1f- (texelPerUvUnit.y * (spriteTopLeft.y + topBottomCutting.y))),					//left-down 0
+			new Vector2(texelPerUvUnit.x * _spriteTopLeft.x,
+			            1f- (texelPerUvUnit.y * (_spriteTopLeft.y + topBottomCutting.y))),					//left-down 0
 
-			new Vector2(texelPerUvUnit.x * (spriteTopLeft.x + spriteSize.x),			
-			            1f- (texelPerUvUnit.y * (spriteTopLeft.y + spriteSize.y ))),	//right-up 3
+			new Vector2(texelPerUvUnit.x * (_spriteTopLeft.x + _spriteSize.x),			
+			            1f- (texelPerUvUnit.y * (_spriteTopLeft.y + _spriteSize.y ))),	//right-up 3
 
-			new Vector2(texelPerUvUnit.x * (spriteTopLeft.x + spriteSize.x),
-			            1f- (texelPerUvUnit.y * (spriteTopLeft.y + topBottomCutting.y)))				//right-down 2
+			new Vector2(texelPerUvUnit.x * (_spriteTopLeft.x + _spriteSize.x),
+			            1f- (texelPerUvUnit.y * (_spriteTopLeft.y + topBottomCutting.y)))				//right-down 2
 		};
 
 
