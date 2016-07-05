@@ -722,9 +722,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d331d60da6c4bdd912e902a556f39b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteTopLeft: {x: 1181, y: 213}
-  spriteSize: {x: 44, y: 50}
-  spriteMaterial: {fileID: 2100000, guid: 8979a3ddce36149de98232d8b327cca8, type: 2}
+  _spriteTopLeft: {x: 1181, y: 213}
+  _spriteSize: {x: 44, y: 50}
+  _spriteMaterial: {fileID: 2100000, guid: 8979a3ddce36149de98232d8b327cca8, type: 2}
   defCameraPixels: 800
   spriteOrientation: 0
   topBottomCutting: {x: 0, y: 0}
@@ -752,9 +752,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d331d60da6c4bdd912e902a556f39b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteTopLeft: {x: 1185, y: 162}
-  spriteSize: {x: 44, y: 40}
-  spriteMaterial: {fileID: 2100000, guid: 8979a3ddce36149de98232d8b327cca8, type: 2}
+  _spriteTopLeft: {x: 1185, y: 162}
+  _spriteSize: {x: 44, y: 40}
+  _spriteMaterial: {fileID: 2100000, guid: 8979a3ddce36149de98232d8b327cca8, type: 2}
   defCameraPixels: 800
   spriteOrientation: 0
   topBottomCutting: {x: 0, y: 0}
