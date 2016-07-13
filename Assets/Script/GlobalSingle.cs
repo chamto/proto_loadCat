@@ -48,5 +48,12 @@ public class Single
 			return CSingletonMono<DayAndNight_MonoBehaviour>.Instance;
 		}
 	}
-
+	
+	public static GameStage gameStage
+	{
+		get
+		{
+			return CSingleton<GameStage>.Instance;
+		}
+	}
 }

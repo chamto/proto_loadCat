@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Loading_MonoBehaviour : MonoBehaviour 
+public class Mono_SceneLoading : MonoBehaviour 
 {
 
 	bool _loadScene = true;

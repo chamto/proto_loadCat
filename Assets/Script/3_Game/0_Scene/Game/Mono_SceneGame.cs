@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class MonoGameInit : MonoBehaviour 
+public class Mono_SceneGame : MonoBehaviour 
 {
 
 	// Use this for initialization
