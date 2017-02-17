@@ -1,15 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class Controller_Data : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+public class Message
+{
+	//private int aabc;
+
+}
+
+public class Telegram
+{
+
+}
+
+//server => client
+
+
+public class Controller_Data
+{
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }
